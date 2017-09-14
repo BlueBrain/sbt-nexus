@@ -20,7 +20,18 @@ export DOCKER_REGISTRY="my-registry.com/my-project" # optional
 export DOCKER_BUILD_ARGS="HTTP_PROXY='http://my-proxy:80'|HTTPS_PROXY='http://my-proxy:80'|no_proxy='localhost,127.0.0.1'" #optional
 ```
 
-Environment variables that support multiple values are strings separated by '|'.
+If you're using macOS adding the above listed environment variables in your `~/.bash_profile` will not work for graphic
+applications (like IntelliJ, for instance). If you're using an ide, you should also set these values using
+`launchctl setenv MYPATH myvar`, like so:
+```
+launchctl setenv RELEASES_REPOSITORY "https://my-repo/repository/content/repositories/releases"
+launchctl setenv SNAPSHOTS_REPOSITORY "https://my-repo/repository/content/repositories/snapshots"
+launchctl setenv ADDITIONAL_RESOLVERS "https://resolver1/repository/content/groups/public|https://resolver2/repository/content/groups/public"
+launchctl setenv DOCKER_REGISTRY "my-registry.com/my-project"
+launchctl setenv DOCKER_BUILD_ARGS "HTTP_PROXY='http://my-proxy:80'|HTTPS_PROXY='http://my-proxy:80'|no_proxy='localhost,127.0.0.1'"
+```
+
+**Note:** Environment variables that support multiple values are strings separated by '|'.
 
 ### Plugins
 
