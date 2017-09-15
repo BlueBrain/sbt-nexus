@@ -1,5 +1,6 @@
 [![Join the chat at https://gitter.im/BlueBrain/nexus](https://badges.gitter.im/BlueBrain/nexus.svg)](https://gitter.im/BlueBrain/nexus?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://bbpcode.epfl.ch/ci/buildStatus/icon?job=nexus.sbt.sbt-nexus)](https://bbpcode.epfl.ch/ci/job/nexus.sbt.sbt-nexus)
+[![GitHub release](https://img.shields.io/github/release/BlueBrain/sbt-nexus.svg)]()
 
 ## SBT Nexus Plugin
 

@@ -33,7 +33,7 @@ releaseNextVersion   := { ver =>
     .getOrElse(versionFormatError)                              // throw if we couldn't compute the version
 }
 releaseCrossBuild    := false
-releaseTagName       := s"${name.value}-${(version in ThisBuild).value}"
+releaseTagName       := s"v${(version in ThisBuild).value}"
 releaseTagComment    := s"Releasing version ${(version in ThisBuild).value}"
 releaseCommitMessage := s"Setting new version to ${(version in ThisBuild).value}"
 releaseProcess       := Seq(

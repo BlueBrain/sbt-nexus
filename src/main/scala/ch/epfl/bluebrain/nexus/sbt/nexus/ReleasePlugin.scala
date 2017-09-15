@@ -48,7 +48,7 @@ object ReleasePlugin extends AutoPlugin {
     // never cross build
     releaseCrossBuild    := false,
     // tag the release with the '$artifactId-$version'
-    releaseTagName       := s"${name.value}-${(version in ThisBuild).value}",
+    releaseTagName       := s"v${(version in ThisBuild).value}",
     // tag commit comment
     releaseTagComment    := s"Releasing version ${(version in ThisBuild).value}",
     // the message to use when committing the new version to version.sbt
