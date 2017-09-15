@@ -6,6 +6,8 @@
 The plugin provides a collection of sbt auto plugins that configure a project with reasonable defaults for most sbt
 based scala projects.
 
+Please visit the [parent project](https://github.com/BlueBrain/nexus) for more information about Nexus.
+
 ### Getting Started
 
 Add the following line to your `project/plugins.sbt` file:
