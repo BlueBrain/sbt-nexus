@@ -44,8 +44,8 @@ object ReleasePlugin extends AutoPlugin {
            |
            |  },
            |"license": "${licenses.value.map(_._1).mkString(",")}",
-           |"author": "Blue Brain Nexus Team",
-           |"contributors": [${contributors.map(c => s"\042$c\042").mkString(",")}]
+           |"author": "BlueBrain Nexus Team",
+           |"contributors": [${contributors.mkString("\"", "\",\"", "\"")}]
            |}
          """.stripMargin
       IO.write(file, contents)
