@@ -18,11 +18,39 @@ import sbtrelease._
   */
 object ReleasePlugin extends AutoPlugin {
 
+  lazy val buildInfoJson  = taskKey[File]("Generates build info json")
+
   override lazy val requires = sbtrelease.ReleasePlugin
 
   override lazy val trigger = allRequirements
 
   override lazy val projectSettings = Seq(
+    buildInfoJson := {
+      val file = target.value / "buildinfo.json"
+      val v = version.value
+      val major = v.split("\\.")(0)
+      val minor = v.split("\\.")(1)
+      val contributors = ("git shortlog -sne HEAD" #| "cut -f2" !!) split "\n"
+      val contents =
+        s"""{
+           |"name": "nexus-${name.value}",
+           |"version": "$v",
+           |"version_major": "$major",
+           |"version_minor": "$minor",
+           |"description"  : "${description.value}",
+           |"repository"   :  {
+           |    "url": "${homepage.value.map(_.toString).getOrElse("undefined")}",
+           |    "issuesurl": "${homepage.value.map(_.toString + "/issues").getOrElse("undefined")}"
+           |
+           |  },
+           |"license": "${licenses.value.map(_._1).mkString(",")}",
+           |"author": "BlueBrain Nexus Team",
+           |"contributors": [${contributors.mkString("\"", "\",\"", "\"")}]
+           |}
+         """.stripMargin
+      IO.write(file, contents)
+      file
+    },
     // bump the patch (bugfix) version by default
     releaseVersionBump   := Version.Bump.Bugfix,
     // compute the version to use for the release (from sys.env or version.sbt)
@@ -63,6 +91,7 @@ object ReleasePlugin extends AutoPlugin {
       commitReleaseVersion,
       tagRelease,
       publishArtifacts,
+      releaseStepTask(buildInfoJson),
       setNextVersion,
       commitNextVersion,
       pushChanges))
