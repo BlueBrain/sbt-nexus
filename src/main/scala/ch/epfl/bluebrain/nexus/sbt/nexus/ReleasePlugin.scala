@@ -30,6 +30,7 @@ object ReleasePlugin extends AutoPlugin {
       val v = version.value
       val major = v.split("\\.")(0)
       val minor = v.split("\\.")(1)
+      val contributors = ("git shortlog -sne HEAD" #| "cut -f2" !!) split "\n"
       val contents =
         s"""{
            |"name": "nexus-${name.value}",
@@ -42,9 +43,9 @@ object ReleasePlugin extends AutoPlugin {
            |    "issuesurl": "${homepage.value.map(_.toString + "/issues").getOrElse("undefined")}"
            |
            |  },
-           |"license": "Apache License 2.0",
+           |"license": "${licenses.value.map(_._1).mkString(",")}",
            |"author": "Blue Brain Nexus Team",
-           |"contributors": ["Blue Brain Nexus Team"]
+           |"contributors": [${contributors.map(c => s"\042$c\042").mkString(",")}]
            |}
          """.stripMargin
       IO.write(file, contents)
