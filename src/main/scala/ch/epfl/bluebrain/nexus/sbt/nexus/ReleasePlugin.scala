@@ -1,5 +1,7 @@
 package ch.epfl.bluebrain.nexus.sbt.nexus
 
+import java.util.Properties
+
 import sbt.Keys._
 import sbt._
 import sbtrelease.ReleasePlugin.autoImport._
@@ -18,37 +20,29 @@ import sbtrelease._
   */
 object ReleasePlugin extends AutoPlugin {
 
-  lazy val buildInfoJson  = taskKey[File]("Generates build info json")
+  lazy val buildInfoProperties  = taskKey[File]("Generates build info properties")
 
   override lazy val requires = sbtrelease.ReleasePlugin
 
   override lazy val trigger = allRequirements
 
   override lazy val projectSettings = Seq(
-    buildInfoJson := {
-      val file = target.value / "buildinfo.json"
+    buildInfoProperties := {
+      val file = target.value / "buildinfo.properties"
       val v = version.value
       val major = v.split("\\.")(0)
       val minor = v.split("\\.")(1)
       val contributors = ("git shortlog -sne HEAD" #| "cut -f2" !!) split "\n"
-      val contents =
-        s"""{
-           |"name": "nexus-${name.value}",
-           |"version": "$v",
-           |"version_major": "$major",
-           |"version_minor": "$minor",
-           |"description"  : "${description.value}",
-           |"repository"   :  {
-           |    "url": "${homepage.value.map(_.toString).getOrElse("undefined")}",
-           |    "issuesurl": "${homepage.value.map(_.toString + "/issues").getOrElse("undefined")}"
-           |
-           |  },
-           |"license": "${licenses.value.map(_._1).mkString(",")}",
-           |"author": "BlueBrain Nexus Team",
-           |"contributors": [${contributors.mkString("\"", "\",\"", "\"")}]
-           |}
-         """.stripMargin
-      IO.write(file, contents)
+      val buildProperties = new Properties()
+      buildProperties.setProperty("PROJECT", s"nexus-${name.value}")
+      buildProperties.setProperty("VERSION", v)
+      buildProperties.setProperty("VERSION_MAJOR", major)
+      buildProperties.setProperty("VERSION_MINOR", minor)
+      buildProperties.setProperty("DESCRIPTION", description.value)
+      buildProperties.setProperty("MAINTAINERS", "BlueBrain Nexus Team")
+      buildProperties.setProperty("CONTRIBUTORS", contributors.mkString(","))
+      buildProperties.setProperty("LICENSE", licenses.value.map(_._1).mkString(","))
+      IO.write(buildProperties, "buildinfo", file)
       file
     },
     // bump the patch (bugfix) version by default
@@ -91,7 +85,7 @@ object ReleasePlugin extends AutoPlugin {
       commitReleaseVersion,
       tagRelease,
       publishArtifacts,
-      releaseStepTask(buildInfoJson),
+      releaseStepTask(buildInfoProperties),
       setNextVersion,
       commitNextVersion,
       pushChanges))
