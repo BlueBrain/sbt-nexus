@@ -48,7 +48,9 @@ object ServicePackagingPlugin extends AutoPlugin {
         ExecCmd("RUN", "apt-get", "-qq", "update"),
         ExecCmd("RUN", "apt-get", "-yq", "install", "dnsutils"),
         ExecCmd("RUN", "apt-get", "clean"),
-        ExecCmd("RUN", "rm", "-rf", "/var/lib/apt/lists/*"))
+        ExecCmd("RUN", "rm", "-rf", "/var/lib/apt/lists/*"),
+        ExecCmd("RUN", "chown", "-R", "root:0", "/opt/docker"),
+        ExecCmd("RUN", "chmod", "-R", "g+w", "/opt/docker"))
       top ++ current
     },
     publishLocal := {
