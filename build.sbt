@@ -54,6 +54,6 @@ addCommandAlias("rel",    ";release with-defaults")
 
 // Additional plugins to introduce to projects using this plugin
 addSbtPlugin("org.scoverage"          %% "sbt-scoverage"       % "1.5.1")
-addSbtPlugin("com.sksamuel.scapegoat" %% "sbt-scapegoat"       % "1.0.4")
+addSbtPlugin("com.sksamuel.scapegoat" %% "sbt-scapegoat"       % "1.0.7")
 addSbtPlugin("com.github.gseitz"       % "sbt-release"         % "1.0.6")
-addSbtPlugin("com.typesafe.sbt"        % "sbt-native-packager" % "1.2.0")
+addSbtPlugin("com.typesafe.sbt"        % "sbt-native-packager" % "1.2.2")

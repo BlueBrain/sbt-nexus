@@ -7,6 +7,7 @@ import sbt._
 import sbtrelease.ReleasePlugin.autoImport._
 import sbtrelease.ReleaseStateTransformations._
 import sbtrelease._
+import scala.sys.process._
 
 /**
   * Release configuration for projects using the plugin.  The versions used in the release can be overridden by means
