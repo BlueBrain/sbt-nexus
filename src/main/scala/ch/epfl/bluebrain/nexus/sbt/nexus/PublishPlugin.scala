@@ -4,6 +4,7 @@ import java.util.regex.Pattern
 
 import sbt.Keys._
 import sbt._
+import sbt.librarymanagement.ModuleFilter
 
 import scala.xml.transform.{RewriteRule, RuleTransformer}
 import scala.xml.{Elem, Node, NodeSeq}
