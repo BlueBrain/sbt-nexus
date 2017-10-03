@@ -186,6 +186,27 @@ to the configured repository.
 Please see the [sbt native packager documentation](http://www.scala-sbt.org/sbt-native-packager/) for more information
 about possible configuration options.
 
+#### DocsPackagingPlugin
+
+The `DocsPackagingPlugin` automates the configuration for generating and publishing docker images containing
+documentation generated with [paradox](https://github.com/lightbend/paradox).
+
+The generated image uses an nginx to serve the generated static content and describes two environment variables
+(`LOCATION` and `SERVER_NAME`) that can be customized in the nginx config.
+
+The following nginx configuration template is used:
+```
+server {
+    listen 8080;
+    server_name ${SERVER_NAME};
+    port_in_redirect off;
+    location ${LOCATION} {
+        alias   /usr/share/nginx/html/;
+        index  index.html;
+    }
+}
+```
+
 #### VersionPlugin
 
 The `VersionPlugin` has the sole purpose of pulling in the configuration keys for versions of well known dependencies
