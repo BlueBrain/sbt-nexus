@@ -64,6 +64,7 @@ object CompilationPlugin extends AutoPlugin {
       "-Ywarn-value-discard",
       "-Ywarn-inaccessible",
       "-Ywarn-unused-import",
+      "-Ywarn-macros:after",
       "-Xfuture"),
     scalacOptionalFlags := Seq(
       "-Ypartial-unification"),
