@@ -42,7 +42,7 @@ object CompilationPlugin extends AutoPlugin {
 
   override lazy val projectSettings = Seq(
     javaSpecificationVersion := "1.8",
-    scalaVersion := "2.12.3",
+    scalaVersion := "2.12.4",
     scalacCommonFlags := Seq(
       "-deprecation",
       "-encoding", "UTF-8",
