@@ -19,48 +19,51 @@ object PublishPlugin extends AutoPlugin {
   override lazy val trigger = allRequirements
 
   trait Keys {
-    val releasesRepository = SettingKey[String](
-      "releases-repository",
-      "The full URL of the repository that hosts released artifacts.")
+    val releasesRepository =
+      SettingKey[String]("releases-repository", "The full URL of the repository that hosts released artifacts.")
 
-    val snapshotsRepository = SettingKey[String](
-      "snapshots-repository",
-      "The full URL of the repository that hosts artifact snapshots.")
+    val snapshotsRepository =
+      SettingKey[String]("snapshots-repository", "The full URL of the repository that hosts artifact snapshots.")
 
-    val additionalResolvers = SettingKey[Seq[Resolver]](
-      "additional-resolvers",
-      "A collection of additional resolvers to add to the build.")
+    val additionalResolvers =
+      SettingKey[Seq[Resolver]]("additional-resolvers", "A collection of additional resolvers to add to the build.")
 
     val dependencyBlacklist = SettingKey[ModuleFilter](
       "dependency-blacklist",
       "A module filter which indicates if a module should be removed from the resulting pom file; if the filter" +
-        " returns true, the module is removed from the dependency list")
+        " returns true, the module is removed from the dependency list"
+    )
   }
   object autoImport extends Keys
   import autoImport._
 
   override lazy val projectSettings = Seq(
-    releasesRepository      := sys.env("RELEASES_REPOSITORY"),
-    snapshotsRepository     := sys.env("SNAPSHOTS_REPOSITORY"),
-    additionalResolvers     := {
-      sys.env.get("ADDITIONAL_RESOLVERS").toList
+    releasesRepository  := sys.env("RELEASES_REPOSITORY"),
+    snapshotsRepository := sys.env("SNAPSHOTS_REPOSITORY"),
+    additionalResolvers := {
+      sys.env
+        .get("ADDITIONAL_RESOLVERS")
+        .toList
         .flatMap(_.split(Pattern.quote("|")))
-        .zipWithIndex.map { case (address, idx) => s"Additional$idx" at address }
+        .zipWithIndex
+        .map { case (address, idx) => s"Additional$idx" at address }
     },
-    resolvers              ++= additionalResolvers.value,
+    resolvers               ++= additionalResolvers.value,
     publishMavenStyle       := true,
     publishArtifact in Test := false,
     pomIncludeRepository    := Function.const(false),
-    publishTo               := {
+    publishTo := {
       if (isSnapshot.value) Some("Snapshots" at snapshotsRepository.value)
       else Some("Releases" at releasesRepository.value)
     },
     // predefined modules to be excluded from the dependency list of the resulting pom
-    dependencyBlacklist     := {
+    dependencyBlacklist := {
       moduleFilter("org.scoverage") | moduleFilter("com.sksamuel.scapegoat")
     },
     // removes compile time only dependencies from the resulting pom
-    pomPostProcess          := { node => transformer(dependencyBlacklist.value).transform(node).head }
+    pomPostProcess := { node =>
+      transformer(dependencyBlacklist.value).transform(node).head
+    }
   )
 
   /**
@@ -75,8 +78,8 @@ object PublishPlugin extends AutoPlugin {
       override def transform(node: Node): NodeSeq = node match {
         case e: Elem if e.label == "dependency" =>
           val organization = e.child.filter(_.label == "groupId").flatMap(_.text).mkString
-          val artifact = e.child.filter(_.label == "artifactId").flatMap(_.text).mkString
-          val version = e.child.filter(_.label == "version").flatMap(_.text).mkString
+          val artifact     = e.child.filter(_.label == "artifactId").flatMap(_.text).mkString
+          val version      = e.child.filter(_.label == "version").flatMap(_.text).mkString
           if (blacklist(organization % artifact % version)) NodeSeq.Empty else node
         case _ => node
       }

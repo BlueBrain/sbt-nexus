@@ -74,5 +74,6 @@ object VersionPlugin extends AutoPlugin {
     shapelessVersion                := "2.3.2",
     sigarLoaderVersion              := "1.6.6-rev002",
     swaggerUIVersion                := "3.0.14",
-    typesafeConfigVersion           := "1.3.1")
+    typesafeConfigVersion           := "1.3.1"
+  )
 }

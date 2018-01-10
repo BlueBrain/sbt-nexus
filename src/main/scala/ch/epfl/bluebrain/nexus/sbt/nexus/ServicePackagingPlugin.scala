@@ -20,13 +20,16 @@ object ServicePackagingPlugin extends AutoPlugin {
   override lazy val trigger = noTrigger
 
   override lazy val projectSettings = Seq(
-    maintainer                  := "Nexus Team <noreply@epfl.ch>",
-    dockerBaseImage             := "openjdk:8-jre",
-    daemonUser                  := "root",
-    dockerExposedPorts          := Seq(8080, 2552),
-    dockerRepository            := sys.env.get("DOCKER_REGISTRY"),
-    dockerAlias                 := DockerAlias(dockerRepository.value, None, (packageName in Docker).value, Some((version in Docker).value)),
-    dockerBuildOptions         ++= {
+    maintainer         := "Nexus Team <noreply@epfl.ch>",
+    dockerBaseImage    := "openjdk:8-jre",
+    daemonUser         := "root",
+    dockerExposedPorts := Seq(8080, 2552),
+    dockerRepository   := sys.env.get("DOCKER_REGISTRY"),
+    dockerAlias := DockerAlias(dockerRepository.value,
+                               None,
+                               (packageName in Docker).value,
+                               Some((version in Docker).value)),
+    dockerBuildOptions ++= {
       val options = for {
         stringArgs <- sys.env.get("DOCKER_BUILD_ARGS").toList
         arg        <- stringArgs.split(Pattern.quote("|"))
@@ -47,24 +50,22 @@ object ServicePackagingPlugin extends AutoPlugin {
         Cmd("USER", daemonUser.value),
         ExecCmd("RUN", "apt-get", "-qq", "update"),
         ExecCmd("RUN", "apt-get", "-yq", "install", "dnsutils"),
-        ExecCmd("RUN", "apt-get", "clean"))
-      val last = Seq(
-        ExecCmd("RUN", "chown", "-R", "root:0", "/opt/docker"),
-        ExecCmd("RUN", "chmod", "-R", "g+w", "/opt/docker"))
+        ExecCmd("RUN", "apt-get", "clean")
+      )
+      val last =
+        Seq(ExecCmd("RUN", "chown", "-R", "root:0", "/opt/docker"), ExecCmd("RUN", "chmod", "-R", "g+w", "/opt/docker"))
       top ++ current ++ last
     },
     publishLocal := {
       publishLocal.value
       Def.taskDyn {
-        if (!isSnapshot.value) Def.task { (publishLocal in Docker).value }
-        else Def.task { () }
+        if (!isSnapshot.value) Def.task { (publishLocal in Docker).value } else Def.task { () }
       }.value
     },
     publish := {
       publish.value
       Def.taskDyn {
-        if (!isSnapshot.value) Def.task { (publish in Docker).value }
-        else Def.task { () }
+        if (!isSnapshot.value) Def.task { (publish in Docker).value } else Def.task { () }
       }.value
     }
   )
