@@ -17,9 +17,8 @@ object DocumentationPlugin extends AutoPlugin {
   override lazy val trigger = allRequirements
 
   trait Keys {
-    val suppressLinkWarnings = SettingKey[Boolean](
-      "doc-suppress-link-warnings",
-      "Suppress the documentation linking warnings.")
+    val suppressLinkWarnings =
+      SettingKey[Boolean]("doc-suppress-link-warnings", "Suppress the documentation linking warnings.")
   }
   object autoImport extends Keys
   import autoImport._
@@ -31,11 +30,12 @@ object DocumentationPlugin extends AutoPlugin {
       else Seq.empty[String]
     },
     javacOptions in (Compile, doc) := Seq("-source", CompilationPlugin.autoImport.javaSpecificationVersion.value),
-    autoAPIMappings := true,
+    autoAPIMappings                := true,
     apiMappings += {
       val scalaDocUrl = s"http://scala-lang.org/api/${scalaVersion.value}/"
       apiMappingFor((fullClasspath in Compile).value)("scala-library", scalaDocUrl)
-    })
+    }
+  )
 
   /**
     * <p>Constructs a tuple (java.io.File -> sbt.URL) by searching the ''classpath'' for the jar file with the argument
@@ -63,9 +63,12 @@ object DocumentationPlugin extends AutoPlugin {
     */
   final def apiMappingFor(classpath: Seq[Attributed[File]])(artifactId: String, address: String): (File, URL) = {
     def findJar(nameBeginsWith: String): File = {
-      classpath.find {
-        attributed: Attributed[java.io.File] => (attributed.data ** s"$nameBeginsWith*.jar").get.nonEmpty
-      }.get.data // fail hard if not found
+      classpath
+        .find { attributed: Attributed[java.io.File] =>
+          (attributed.data ** s"$nameBeginsWith*.jar").get.nonEmpty
+        }
+        .get
+        .data // fail hard if not found
     }
     findJar(artifactId) -> url(address)
   }

@@ -21,7 +21,7 @@ import scala.sys.process._
   */
 object ReleasePlugin extends AutoPlugin {
 
-  lazy val buildInfoProperties  = taskKey[File]("Generates build info properties")
+  lazy val buildInfoProperties = taskKey[File]("Generates build info properties")
 
   override lazy val requires = sbtrelease.ReleasePlugin
 
@@ -29,11 +29,11 @@ object ReleasePlugin extends AutoPlugin {
 
   override lazy val projectSettings = Seq(
     buildInfoProperties := {
-      val file = target.value / "buildinfo.properties"
-      val v = version.value
-      val major = v.split("\\.")(0)
-      val minor = v.split("\\.")(1)
-      val contributors = ("git shortlog -sne HEAD" #| "cut -f2" !!) split "\n"
+      val file            = target.value / "buildinfo.properties"
+      val v               = version.value
+      val major           = v.split("\\.")(0)
+      val minor           = v.split("\\.")(1)
+      val contributors    = ("git shortlog -sne HEAD" #| "cut -f2" !!) split "\n"
       val buildProperties = new Properties()
       buildProperties.setProperty("PROJECT", s"nexus-${name.value}")
       buildProperties.setProperty("VERSION", v)
@@ -47,37 +47,39 @@ object ReleasePlugin extends AutoPlugin {
       file
     },
     // bump the patch (bugfix) version by default
-    releaseVersionBump   := Version.Bump.Bugfix,
+    releaseVersionBump := Version.Bump.Bugfix,
     // compute the version to use for the release (from sys.env or version.sbt)
-    releaseVersion       := { ver =>
-      sys.env.get("RELEASE_VERSION")                                // fetch the optional system env var
+    releaseVersion := { ver =>
+      sys.env
+        .get("RELEASE_VERSION") // fetch the optional system env var
         .map(_.trim)
         .filterNot(_.isEmpty)
-        .map(v => Version(v).getOrElse(versionFormatError))         // parse it into a version or throw
-        .orElse(Version(ver).map(_.withoutQualifier))               // fallback on the current version without a qualifier
-        .map(_.string)                                              // map it to its string representation
-        .getOrElse(versionFormatError)                              // throw if we couldn't compute the version
+        .map(v => Version(v).getOrElse(versionFormatError)) // parse it into a version or throw
+        .orElse(Version(ver).map(_.withoutQualifier)) // fallback on the current version without a qualifier
+        .map(_.string) // map it to its string representation
+        .getOrElse(versionFormatError) // throw if we couldn't compute the version
     },
     // compute the next development version to use for the release (from sys.env or release version)
-    releaseNextVersion   := { ver =>
-      sys.env.get("NEXT_VERSION")                                   // fetch the optional system env var
+    releaseNextVersion := { ver =>
+      sys.env
+        .get("NEXT_VERSION") // fetch the optional system env var
         .map(_.trim)
         .filterNot(_.isEmpty)
-        .map(v => Version(v).getOrElse(versionFormatError))         // parse it into a version or throw
+        .map(v => Version(v).getOrElse(versionFormatError)) // parse it into a version or throw
         .orElse(Version(ver).map(_.bump(releaseVersionBump.value))) // fallback on the current version bumped accordingly
-        .map(_.asSnapshot.string)                                   // map it to its snapshot version as string
-        .getOrElse(versionFormatError)                              // throw if we couldn't compute the version
+        .map(_.asSnapshot.string) // map it to its snapshot version as string
+        .getOrElse(versionFormatError) // throw if we couldn't compute the version
     },
     // never cross build
-    releaseCrossBuild    := false,
+    releaseCrossBuild := false,
     // tag the release with the '$artifactId-$version'
-    releaseTagName       := s"v${(version in ThisBuild).value}",
+    releaseTagName := s"v${(version in ThisBuild).value}",
     // tag commit comment
-    releaseTagComment    := s"Releasing version ${(version in ThisBuild).value}",
+    releaseTagComment := s"Releasing version ${(version in ThisBuild).value}",
     // the message to use when committing the new version to version.sbt
     releaseCommitMessage := s"Setting new version to ${(version in ThisBuild).value}",
     // the default release process, listed explicitly
-    releaseProcess       := Seq(
+    releaseProcess := Seq(
       checkSnapshotDependencies,
       inquireVersions,
       runClean,
@@ -89,5 +91,7 @@ object ReleasePlugin extends AutoPlugin {
       releaseStepTask(buildInfoProperties),
       setNextVersion,
       commitNextVersion,
-      pushChanges))
+      pushChanges
+    )
+  )
 }

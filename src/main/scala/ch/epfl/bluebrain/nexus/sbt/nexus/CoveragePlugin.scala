@@ -13,7 +13,5 @@ object CoveragePlugin extends AutoPlugin {
 
   override lazy val trigger = allRequirements
 
-  override lazy val projectSettings = Seq(
-    coverageMinimum       := 80,
-    coverageFailOnMinimum := true)
+  override lazy val projectSettings = Seq(coverageMinimum := 80, coverageFailOnMinimum := true)
 }

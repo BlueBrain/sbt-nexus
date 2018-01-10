@@ -20,21 +20,14 @@ object CompilationPlugin extends AutoPlugin {
       "java-specification-version",
       "The java specification version to be used for source and target compatibility.")
 
-    val scalacCommonFlags = SettingKey[Seq[String]](
-      "scalac-common-flags",
-      "Common scalac options useful to most projects")
+    val scalacCommonFlags =
+      SettingKey[Seq[String]]("scalac-common-flags", "Common scalac options useful to most projects")
 
-    val scalacLanguageFlags = SettingKey[Seq[String]](
-      "scalac-language-flags",
-      "Scalac language options to enable")
+    val scalacLanguageFlags = SettingKey[Seq[String]]("scalac-language-flags", "Scalac language options to enable")
 
-    val scalacStrictFlags = SettingKey[Seq[String]](
-      "scalac-strict-flags",
-      "Scalac strict compilation flags")
+    val scalacStrictFlags = SettingKey[Seq[String]]("scalac-strict-flags", "Scalac strict compilation flags")
 
-    val scalacOptionalFlags = SettingKey[Seq[String]](
-      "scalac-optional-flags",
-      "Scalac optional compilation flags")
+    val scalacOptionalFlags = SettingKey[Seq[String]]("scalac-optional-flags", "Scalac optional compilation flags")
   }
 
   object autoImport extends Keys
@@ -42,20 +35,16 @@ object CompilationPlugin extends AutoPlugin {
 
   override lazy val projectSettings = Seq(
     javaSpecificationVersion := "1.8",
-    scalaVersion := "2.12.4",
-    scalacCommonFlags := Seq(
-      "-deprecation",
-      "-encoding", "UTF-8",
-      "-feature",
-      "-unchecked",
-      "-Xlint"),
+    scalaVersion             := "2.12.4",
+    scalacCommonFlags        := Seq("-deprecation", "-encoding", "UTF-8", "-feature", "-unchecked", "-Xlint"),
     scalacLanguageFlags := Seq(
       "-language:existentials",
       "-language:higherKinds",
       "-language:implicitConversions",
       "-language:postfixOps",
       "-language:existentials",
-      "-language:experimental.macros"),
+      "-language:experimental.macros"
+    ),
     scalacStrictFlags := Seq(
       "-Xfatal-warnings",
       "-Yno-adapted-args",
@@ -66,27 +55,31 @@ object CompilationPlugin extends AutoPlugin {
       "-Ywarn-unused-import",
       "-Ywarn-unused:params,patvars",
       "-Ywarn-macros:after",
-      "-Xfuture"),
-    scalacOptionalFlags := Seq(
-      "-Ypartial-unification"),
+      "-Xfuture"
+    ),
+    scalacOptionalFlags := Seq("-Ypartial-unification"),
     scalacOptions ++= {
       scalacCommonFlags.value ++
         scalacLanguageFlags.value ++
         scalacStrictFlags.value ++
         scalacOptionalFlags.value ++
-        Seq(
-          s"-target:jvm-${javaSpecificationVersion.value}")
+        Seq(s"-target:jvm-${javaSpecificationVersion.value}")
     },
-    javacOptions ++= Seq("-source", javaSpecificationVersion.value, "-target", javaSpecificationVersion.value, "-Xlint"),
+    javacOptions ++= Seq("-source",
+                         javaSpecificationVersion.value,
+                         "-target",
+                         javaSpecificationVersion.value,
+                         "-Xlint"),
     // fail the build initialization if the JDK currently used is not ${javaSpecificationVersion} or higher
     initialize := {
       // runs the previous initialization
       initialize.value
       // runs the java compatibility check
-      val current = VersionNumber(sys.props("java.specification.version"))
+      val current  = VersionNumber(sys.props("java.specification.version"))
       val required = VersionNumber(javaSpecificationVersion.value)
       assert(CompatibleJavaVersion(current, required), s"Java '$required' or above required; current '$current'")
-    })
+    }
+  )
 
   /**
     * Custom java compatibility check.  Any higher version than current is considered compatible.
@@ -95,7 +88,8 @@ object CompilationPlugin extends AutoPlugin {
     override val name = "Java specification compatibility"
 
     override def isCompatible(current: VersionNumber, required: VersionNumber): Boolean =
-      current.numbers.zip(required.numbers)
+      current.numbers
+        .zip(required.numbers)
         .foldRight(required.numbers.size <= current.numbers.size) {
           case ((curr, req), acc) => (curr > req) || (curr == req && acc)
         }
