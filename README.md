@@ -207,23 +207,6 @@ server {
 }
 ```
 
-#### VersionPlugin
-
-The `VersionPlugin` has the sole purpose of pulling in the configuration keys for versions of well known dependencies
-automatically in the scope of the `build.sbt` file.  It allows a consistent upgrade of dependency versions across all
-projects built with this plugin.
-
-Projects can override the versions inherited from this plugin, for example:
-
-```scala
-lazy val myProject = project
-  .settings(circeVersion := "0.6.1") // overrides the default version set to "0.7.0"
-  .settings(libraryDependencies ++= Seq(
-    "io.circe"      %% "circe-core" % circeVersion.value,
-    "org.scalatest" %% "scalatest"  % scalaTestVersion.value % Test
-  ))
-```
-
 #### NexusPlugin
 
 Generic auto plugin to define arbitrary Nexus specific settings that don't deserve their own separate plugin.  It
