@@ -11,17 +11,20 @@ Please visit the [parent project](https://github.com/BlueBrain/nexus) for more i
 
 ### Getting Started
 
+Add the necessary resolver:
+
+```scala
+resolvers += Resolver.bintrayRepo("bbp", "nexus-releases")
+```
+
 Add the following line to your `project/plugins.sbt` file:
 
 ```scala
 addSbtPlugin("ch.epfl.bluebrain.nexus" % "sbt-nexus" % "M.m.p")
 ```
 
-Add the following environment variables (you can safely exclude the optional ones):
+If you'd like to use this plugin to publish generated docker images add the following environment variables:
 ```
-export RELEASES_REPOSITORY="https://my-repo/repository/content/repositories/releases"
-export SNAPSHOTS_REPOSITORY="https://my-repo/repository/content/repositories/snapshots"
-export ADDITIONAL_RESOLVERS="https://resolver1/repository/content/groups/public|https://resolver2/repository/content/groups/public" #optional
 export DOCKER_REGISTRY="my-registry.com/my-project" # optional
 export DOCKER_BUILD_ARGS="HTTP_PROXY='http://my-proxy:80'|HTTPS_PROXY='http://my-proxy:80'|no_proxy='localhost,127.0.0.1'" #optional
 ```
@@ -30,9 +33,6 @@ If you're using macOS adding the above listed environment variables in your `~/.
 applications (like IntelliJ, for instance). If you're using an ide, you should also set these values using `launchctl`
 (syntax: `launchctl setenv MYPATH myvar`), like so:
 ```
-launchctl setenv RELEASES_REPOSITORY "https://my-repo/repository/content/repositories/releases"
-launchctl setenv SNAPSHOTS_REPOSITORY "https://my-repo/repository/content/repositories/snapshots"
-launchctl setenv ADDITIONAL_RESOLVERS "https://resolver1/repository/content/groups/public|https://resolver2/repository/content/groups/public"
 launchctl setenv DOCKER_REGISTRY "my-registry.com/my-project"
 launchctl setenv DOCKER_BUILD_ARGS "HTTP_PROXY='http://my-proxy:80'|HTTPS_PROXY='http://my-proxy:80'|no_proxy='localhost,127.0.0.1'"
 ```
@@ -102,14 +102,11 @@ $ NEXT_VERSION="0.5.0-SNAPSHOT" sbt 'release with-defaults'
 
 #### PublishPlugin
 
-The `PublishPlugin` configures the target repositories where snapshots or releases are to be published and defines a
-default internal resolver for fetching artifacts.
+The `PublishPlugin` configures the publishing step, currently allowing to blacklist dependencies in the resulting pom
+file.
 
 Exposed setting keys:
 
-   * `releasesRepository` (_releases-repository_): the target repository for publishing releases
-   * `snapshotsRepository` (_snapshots-repository_): the target repository for publishing snapshots
-   * `additionalResolvers` (_additional-resolvers_): a collection of resolvers to add to the build
    * `dependencyBlacklist` (_dependency-blacklist_): a module filter for stripping out compile time only dependencies
      from the resulting pom file.
 

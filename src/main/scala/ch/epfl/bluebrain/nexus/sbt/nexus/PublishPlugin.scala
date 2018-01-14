@@ -1,7 +1,6 @@
 package ch.epfl.bluebrain.nexus.sbt.nexus
 
-import java.util.regex.Pattern
-
+import bintray.BintrayKeys._
 import sbt.Keys._
 import sbt._
 import sbt.librarymanagement.ModuleFilter
@@ -19,15 +18,6 @@ object PublishPlugin extends AutoPlugin {
   override lazy val trigger = allRequirements
 
   trait Keys {
-    val releasesRepository =
-      SettingKey[String]("releases-repository", "The full URL of the repository that hosts released artifacts.")
-
-    val snapshotsRepository =
-      SettingKey[String]("snapshots-repository", "The full URL of the repository that hosts artifact snapshots.")
-
-    val additionalResolvers =
-      SettingKey[Seq[Resolver]]("additional-resolvers", "A collection of additional resolvers to add to the build.")
-
     val dependencyBlacklist = SettingKey[ModuleFilter](
       "dependency-blacklist",
       "A module filter which indicates if a module should be removed from the resulting pom file; if the filter" +
@@ -38,24 +28,11 @@ object PublishPlugin extends AutoPlugin {
   import autoImport._
 
   override lazy val projectSettings = Seq(
-    releasesRepository  := sys.env("RELEASES_REPOSITORY"),
-    snapshotsRepository := sys.env("SNAPSHOTS_REPOSITORY"),
-    additionalResolvers := {
-      sys.env
-        .get("ADDITIONAL_RESOLVERS")
-        .toList
-        .flatMap(_.split(Pattern.quote("|")))
-        .zipWithIndex
-        .map { case (address, idx) => s"Additional$idx" at address }
-    },
-    resolvers               ++= additionalResolvers.value,
+    bintrayOrganization     := Some("bbp"),
+    bintrayRepository       := "nexus-releases",
     publishMavenStyle       := true,
     publishArtifact in Test := false,
     pomIncludeRepository    := Function.const(false),
-    publishTo := {
-      if (isSnapshot.value) Some("Snapshots" at snapshotsRepository.value)
-      else Some("Releases" at releasesRepository.value)
-    },
     // predefined modules to be excluded from the dependency list of the resulting pom
     dependencyBlacklist := {
       moduleFilter("org.scoverage") | moduleFilter("com.sksamuel.scapegoat")
