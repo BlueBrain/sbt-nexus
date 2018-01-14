@@ -1,14 +1,11 @@
 // Main plugin settings
-organization           := "ch.epfl.bluebrain.nexus"
-name                   := "sbt-nexus"
-sbtPlugin              := true
-overrideBuildResolvers := true
-publishMavenStyle      := true
-pomIncludeRepository   := Function.const(false)
-publishTo := {
-  if (isSnapshot.value) Some("Snapshots" at sys.env("SNAPSHOTS_REPOSITORY"))
-  else Some("Releases" at sys.env("RELEASES_REPOSITORY"))
-}
+organization         := "ch.epfl.bluebrain.nexus"
+name                 := "sbt-nexus"
+sbtPlugin            := true
+publishMavenStyle    := true
+pomIncludeRepository := Function.const(false)
+bintrayOrganization  := Some("bbp")
+bintrayRepository    := "nexus-releases"
 
 // Release settings
 import sbtrelease.ReleaseStateTransformations._
@@ -52,13 +49,14 @@ releaseProcess := Seq(
 )
 
 // Command aliases for CI
-addCommandAlias("review", ";clean;scalafmtSbtCheck;package")
+addCommandAlias("review", ";clean;scalafmtCheck;package")
 addCommandAlias("rel", ";release with-defaults")
 
 // Additional plugins to introduce to projects using this plugin
 addSbtPlugin("org.scoverage"          %% "sbt-scoverage"      % "1.5.1")
 addSbtPlugin("com.sksamuel.scapegoat" %% "sbt-scapegoat"      % "1.0.7")
 addSbtPlugin("com.github.gseitz"      % "sbt-release"         % "1.0.7")
+addSbtPlugin("org.foundweekends"      % "sbt-bintray"         % "0.5.2")
 addSbtPlugin("com.typesafe.sbt"       % "sbt-native-packager" % "1.3.2")
 addSbtPlugin("com.lightbend.paradox"  % "sbt-paradox"         % "0.3.2")
 addSbtPlugin("com.geirsson"           % "sbt-scalafmt"        % "1.4.0")
