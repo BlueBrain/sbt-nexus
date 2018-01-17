@@ -16,6 +16,10 @@ object CompilationPlugin extends AutoPlugin {
   override lazy val trigger = allRequirements
 
   trait Keys {
+    val scalacSilencerVersion = SettingKey[String](
+      "scalac-silencer-version",
+      "Scalac silencer plugin version for annotation-based warning suppression.")
+
     val javaSpecificationVersion = SettingKey[String](
       "java-specification-version",
       "The java specification version to be used for source and target compatibility.")
@@ -36,6 +40,7 @@ object CompilationPlugin extends AutoPlugin {
   override lazy val projectSettings = Seq(
     javaSpecificationVersion := "1.8",
     scalaVersion             := "2.12.4",
+    scalacSilencerVersion    := "0.6",
     scalacCommonFlags        := Seq("-deprecation", "-encoding", "UTF-8", "-feature", "-unchecked", "-Xlint"),
     scalacLanguageFlags := Seq(
       "-language:existentials",
@@ -70,6 +75,10 @@ object CompilationPlugin extends AutoPlugin {
                          "-target",
                          javaSpecificationVersion.value,
                          "-Xlint"),
+    libraryDependencies ++= Seq(
+      compilerPlugin("com.github.ghik" %% "silencer-plugin" % scalacSilencerVersion.value),
+      "com.github.ghik" %% "silencer-lib" % scalacSilencerVersion.value
+    ),
     // fail the build initialization if the JDK currently used is not ${javaSpecificationVersion} or higher
     initialize := {
       // runs the previous initialization

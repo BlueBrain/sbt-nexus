@@ -8,7 +8,7 @@ import sbt._
   * cross linking the scala doc.  The default configuration automatically adds the ''scala library'' to the
   * ''apiMappings''.
   *
-  * @see [[ch.epfl.bluebrain.nexus.sbt.nexus.DocumentationPlugin#mapping]]
+  * @see [[ch.epfl.bluebrain.nexus.sbt.nexus.DocumentationPlugin#apiMappingFor]]
   */
 object DocumentationPlugin extends AutoPlugin {
 
