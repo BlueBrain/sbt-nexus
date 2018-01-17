@@ -1,6 +1,7 @@
 package ch.epfl.bluebrain.nexus.sbt.nexus
 
-import bintray.BintrayKeys._
+import _root_.bintray.BintrayPlugin
+import _root_.bintray.BintrayKeys._
 import sbt.Keys._
 import sbt._
 import sbt.librarymanagement.ModuleFilter
@@ -13,7 +14,7 @@ import scala.xml.{Elem, Node, NodeSeq}
   */
 object PublishPlugin extends AutoPlugin {
 
-  override lazy val requires = empty
+  override lazy val requires = BintrayPlugin
 
   override lazy val trigger = allRequirements
 
