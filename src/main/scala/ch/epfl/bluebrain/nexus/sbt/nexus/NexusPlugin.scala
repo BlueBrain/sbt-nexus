@@ -12,6 +12,13 @@ object NexusPlugin extends AutoPlugin {
 
   override lazy val trigger = allRequirements
 
+  override lazy val buildSettings = Seq(
+    resolvers ++= Seq(
+      Resolver.bintrayRepo("bbp", "nexus-releases"),
+      Resolver.bintrayRepo("bogdanromanx", "maven")
+    )
+  )
+
   override lazy val projectSettings = Seq(
     organization := "ch.epfl.bluebrain.nexus",
     resolvers ++= Seq(
