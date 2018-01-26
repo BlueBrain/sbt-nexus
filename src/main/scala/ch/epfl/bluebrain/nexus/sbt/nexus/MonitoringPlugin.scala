@@ -1,8 +1,7 @@
 package ch.epfl.bluebrain.nexus.sbt.nexus
 
-import sbt._
 import sbt.Keys.libraryDependencies
-import sbt.{AutoPlugin, SettingKey}
+import sbt._
 
 object MonitoringPlugin extends AutoPlugin {
 
