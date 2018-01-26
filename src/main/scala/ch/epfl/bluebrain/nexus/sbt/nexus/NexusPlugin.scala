@@ -15,7 +15,8 @@ object NexusPlugin extends AutoPlugin {
   override lazy val buildSettings = Seq(
     resolvers ++= Seq(
       Resolver.bintrayRepo("bbp", "nexus-releases"),
-      Resolver.bintrayRepo("bogdanromanx", "maven")
+      Resolver.bintrayRepo("bogdanromanx", "maven"),
+      Resolver.bintrayRepo("kamon-io", "sbt-plugins")
     )
   )
 
@@ -23,7 +24,8 @@ object NexusPlugin extends AutoPlugin {
     organization := "ch.epfl.bluebrain.nexus",
     resolvers ++= Seq(
       Resolver.bintrayRepo("bbp", "nexus-releases"),
-      Resolver.bintrayRepo("bogdanromanx", "maven")
+      Resolver.bintrayRepo("bogdanromanx", "maven"),
+      Resolver.bintrayRepo("kamon-io", "sbt-plugins")
     )
   )
 }
