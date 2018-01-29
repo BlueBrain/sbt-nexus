@@ -5,7 +5,7 @@ import sbt._
 
 object MonitoringPlugin extends AutoPlugin {
 
-  override lazy val requires = empty
+  override lazy val requires = ServicePackagingPlugin
 
   override lazy val trigger = allRequirements
 
