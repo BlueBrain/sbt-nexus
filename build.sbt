@@ -61,4 +61,3 @@ addSbtPlugin("com.typesafe.sbt"                          % "sbt-native-packager"
 addSbtPlugin("com.lightbend.paradox"                     % "sbt-paradox"         % "0.3.2")
 addSbtPlugin("com.geirsson"                              % "sbt-scalafmt"        % "1.4.0")
 addSbtPlugin("com.codacy"                                % "sbt-codacy-coverage" % "1.3.11")
-addSbtPlugin("io.kamon"                                  % "sbt-aspectj-runner"  % "1.0.4")

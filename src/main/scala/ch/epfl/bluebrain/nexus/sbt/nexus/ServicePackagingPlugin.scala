@@ -56,6 +56,11 @@ object ServicePackagingPlugin extends AutoPlugin {
         Seq(ExecCmd("RUN", "chown", "-R", "root:0", "/opt/docker"), ExecCmd("RUN", "chmod", "-R", "g+w", "/opt/docker"))
       top ++ current ++ last
     },
+    libraryDependencies += "org.aspectj" % "aspectjweaver" % "1.8.10" % Runtime,
+    bashScriptExtraDefines ++= Seq(
+      """addJava "-javaagent:$lib_dir/org.aspectj.aspectjweaver-1.8.10.jar"""",
+      """addJava "-javaagent:$lib_dir/io.kamon.sigar-loader-1.6.5-rev002.jar""""
+    ),
     publishLocal := {
       publishLocal.value
       Def.taskDyn {
