@@ -4,6 +4,7 @@ import java.util.regex.Pattern
 
 import com.typesafe.sbt.packager.Keys._
 import com.typesafe.sbt.packager.archetypes.JavaAppPackaging
+import com.typesafe.sbt.packager.archetypes.scripts.BashStartScriptPlugin
 import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport.{Docker, DockerAlias}
 import com.typesafe.sbt.packager.docker.{Cmd, DockerPlugin, ExecCmd}
 import com.typesafe.sbt.packager.universal.UniversalPlugin
@@ -15,7 +16,7 @@ import sbt._
   */
 object ServicePackagingPlugin extends AutoPlugin {
 
-  override lazy val requires = UniversalPlugin && JavaAppPackaging && DockerPlugin
+  override lazy val requires = UniversalPlugin && JavaAppPackaging && BashStartScriptPlugin && DockerPlugin
 
   override lazy val trigger = noTrigger
 
