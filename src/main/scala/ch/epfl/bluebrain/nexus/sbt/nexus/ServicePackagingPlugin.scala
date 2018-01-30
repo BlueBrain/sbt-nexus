@@ -20,6 +20,14 @@ object ServicePackagingPlugin extends AutoPlugin {
 
   override lazy val trigger = noTrigger
 
+  trait Keys {
+    val aspectjWeaverVersion = SettingKey[String]("aspectj-weaver-version", "AspectJ weaver version")
+    val sigarLoaderVersion   = SettingKey[String]("sigar-loader-version", "Kamon Sigar loader version")
+  }
+
+  object autoImport extends Keys
+  import autoImport._
+
   override lazy val projectSettings = Seq(
     maintainer         := "Nexus Team <noreply@epfl.ch>",
     dockerBaseImage    := "openjdk:8-jre",
@@ -57,10 +65,13 @@ object ServicePackagingPlugin extends AutoPlugin {
         Seq(ExecCmd("RUN", "chown", "-R", "root:0", "/opt/docker"), ExecCmd("RUN", "chmod", "-R", "g+w", "/opt/docker"))
       top ++ current ++ last
     },
-    libraryDependencies += "org.aspectj" % "aspectjweaver" % "1.8.10" % Runtime,
+    aspectjWeaverVersion := "1.8.10",
+    sigarLoaderVersion   := "1.6.6-rev002",
+    libraryDependencies ++= Seq("org.aspectj" % "aspectjweaver" % aspectjWeaverVersion.value % Runtime,
+                                "io.kamon" % "sigar-loader" % sigarLoaderVersion.value % Runtime),
     bashScriptExtraDefines ++= Seq(
-      """addJava "-javaagent:$lib_dir/org.aspectj.aspectjweaver-1.8.10.jar"""",
-      """addJava "-javaagent:$lib_dir/io.kamon.sigar-loader-1.6.6-rev002.jar""""
+      s"""addJava "-javaagent:$$lib_dir/org.aspectj.aspectjweaver-${aspectjWeaverVersion.value}.jar"""",
+      s"""addJava "-javaagent:$$lib_dir/io.kamon.sigar-loader-${sigarLoaderVersion.value}.jar""""
     ),
     publishLocal := {
       publishLocal.value
