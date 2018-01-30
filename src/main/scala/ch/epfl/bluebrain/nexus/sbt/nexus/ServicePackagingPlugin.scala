@@ -60,7 +60,7 @@ object ServicePackagingPlugin extends AutoPlugin {
     libraryDependencies += "org.aspectj" % "aspectjweaver" % "1.8.10" % Runtime,
     bashScriptExtraDefines ++= Seq(
       """addJava "-javaagent:$lib_dir/org.aspectj.aspectjweaver-1.8.10.jar"""",
-      """addJava "-javaagent:$lib_dir/io.kamon.sigar-loader-1.6.5-rev002.jar""""
+      """addJava "-javaagent:$lib_dir/io.kamon.sigar-loader-1.6.6-rev002.jar""""
     ),
     publishLocal := {
       publishLocal.value
