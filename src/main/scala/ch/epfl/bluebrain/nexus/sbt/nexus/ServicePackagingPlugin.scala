@@ -4,6 +4,7 @@ import java.util.regex.Pattern
 
 import com.typesafe.sbt.packager.Keys._
 import com.typesafe.sbt.packager.archetypes.JavaAppPackaging
+import com.typesafe.sbt.packager.archetypes.scripts.BashStartScriptPlugin
 import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport.{Docker, DockerAlias}
 import com.typesafe.sbt.packager.docker.{Cmd, DockerPlugin, ExecCmd}
 import com.typesafe.sbt.packager.universal.UniversalPlugin
@@ -15,9 +16,17 @@ import sbt._
   */
 object ServicePackagingPlugin extends AutoPlugin {
 
-  override lazy val requires = UniversalPlugin && JavaAppPackaging && DockerPlugin
+  override lazy val requires = UniversalPlugin && JavaAppPackaging && BashStartScriptPlugin && DockerPlugin
 
   override lazy val trigger = noTrigger
+
+  trait Keys {
+    val aspectjWeaverVersion = SettingKey[String]("aspectj-weaver-version", "AspectJ weaver version")
+    val sigarLoaderVersion   = SettingKey[String]("sigar-loader-version", "Kamon Sigar loader version")
+  }
+
+  object autoImport extends Keys
+  import autoImport._
 
   override lazy val projectSettings = Seq(
     maintainer         := "Nexus Team <noreply@epfl.ch>",
@@ -56,6 +65,14 @@ object ServicePackagingPlugin extends AutoPlugin {
         Seq(ExecCmd("RUN", "chown", "-R", "root:0", "/opt/docker"), ExecCmd("RUN", "chmod", "-R", "g+w", "/opt/docker"))
       top ++ current ++ last
     },
+    aspectjWeaverVersion := "1.8.10",
+    sigarLoaderVersion   := "1.6.6-rev002",
+    libraryDependencies ++= Seq("org.aspectj" % "aspectjweaver" % aspectjWeaverVersion.value % Runtime,
+                                "io.kamon" % "sigar-loader" % sigarLoaderVersion.value % Runtime),
+    bashScriptExtraDefines ++= Seq(
+      s"""addJava "-javaagent:$$lib_dir/org.aspectj.aspectjweaver-${aspectjWeaverVersion.value}.jar"""",
+      s"""addJava "-javaagent:$$lib_dir/io.kamon.sigar-loader-${sigarLoaderVersion.value}.jar""""
+    ),
     publishLocal := {
       publishLocal.value
       Def.taskDyn {
