@@ -62,6 +62,7 @@ object DocumentationPlugin extends AutoPlugin {
     * @return a tuple (java.io.File -> sbt.URL) to be appended to the ''apiMappings''
     */
   final def apiMappingFor(classpath: Seq[Attributed[File]])(artifactId: String, address: String): (File, URL) = {
+    @SuppressWarnings(Array("OptionGet"))
     def findJar(nameBeginsWith: String): File = {
       classpath
         .find { attributed: Attributed[java.io.File] =>

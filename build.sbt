@@ -3,21 +3,6 @@ organization := "ch.epfl.bluebrain.nexus"
 name         := "sbt-nexus"
 sbtPlugin    := true
 
-// Generic publish settings
-sources in (Compile, doc)                := Seq.empty
-publishArtifact in packageDoc            := false
-publishArtifact in (Compile, packageSrc) := true
-publishArtifact in (Compile, packageDoc) := false
-publishArtifact in (Test, packageBin)    := false
-publishArtifact in (Test, packageDoc)    := false
-publishArtifact in (Test, packageSrc)    := false
-publishMavenStyle                        := true
-pomIncludeRepository                     := Function.const(false)
-
-// Bintray publish settings
-bintrayOrganization := Some("bbp")
-bintrayRepository   := "nexus-releases"
-
 // Build publish settings
 inThisBuild(
   List(
@@ -36,32 +21,6 @@ inThisBuild(
     releaseEarlyNoGpg             := true,
     releaseEarlyEnableSyncToMaven := false,
   ))
-
-scalacOptions ++= Seq(
-  "-deprecation",
-  "-encoding",
-  "UTF-8",
-  "-feature",
-  "-unchecked",
-  "-Xlint",
-  "-language:existentials",
-  "-language:higherKinds",
-  "-language:implicitConversions",
-  "-language:postfixOps",
-  "-language:existentials",
-  "-language:experimental.macros",
-  "-Yno-adapted-args",
-  "-Ywarn-dead-code",
-  "-Ywarn-numeric-widen",
-  "-Ywarn-value-discard",
-  "-Ywarn-inaccessible",
-  "-Ywarn-unused-import",
-  "-Ywarn-unused:params,patvars",
-  "-Ywarn-macros:after",
-  "-Xfuture",
-  "-Xfatal-warnings",
-  "-Ypartial-unification",
-)
 
 // Additional plugins to introduce to projects using this plugin
 addSbtPlugin("ch.epfl.scala"          % "sbt-release-early"   % "2.1.1")
