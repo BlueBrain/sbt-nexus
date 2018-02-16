@@ -1,3 +1,29 @@
+/*
+scalafmt: {
+  style = defaultWithAlign
+  maxColumn = 150
+  align.tokens = [
+    { code = "=>", owner = "Case" }
+    { code = "?", owner = "Case" }
+    { code = "extends", owner = "Defn.(Class|Trait|Object)" }
+    { code = "//", owner = ".*" }
+    { code = "{", owner = "Template" }
+    { code = "}", owner = "Template" }
+    { code = ":=", owner = "Term.ApplyInfix" }
+    { code = "++=", owner = "Term.ApplyInfix" }
+    { code = "+=", owner = "Term.ApplyInfix" }
+    { code = "%", owner = "Term.ApplyInfix" }
+    { code = "%%", owner = "Term.ApplyInfix" }
+    { code = "%%%", owner = "Term.ApplyInfix" }
+    { code = "->", owner = "Term.ApplyInfix" }
+    { code = "?", owner = "Term.ApplyInfix" }
+    { code = "<-", owner = "Enumerator.Generator" }
+    { code = "?", owner = "Enumerator.Generator" }
+    { code = "=", owner = "(Enumerator.Val|Defn.(Va(l|r)|Def|Type))" }
+  ]
+}
+ */
+
 // Main plugin settings
 organization := "ch.epfl.bluebrain.nexus"
 name         := "sbt-nexus"
@@ -8,8 +34,7 @@ inThisBuild(
   List(
     homepage := Some(url("https://github.com/BlueBrain/sbt-nexus")),
     licenses := Seq("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
-    scmInfo := Some(
-      ScmInfo(url("https://github.com/BlueBrain/sbt-nexus"), "scm:git:git@github.com:BlueBrain/sbt-nexus.git")),
+    scmInfo  := Some(ScmInfo(url("https://github.com/BlueBrain/sbt-nexus"), "scm:git:git@github.com:BlueBrain/sbt-nexus.git")),
     developers := List(
       Developer("bogdanromanx", "Bogdan Roman", "noreply@epfl.ch", url("https://bluebrain.epfl.ch/")),
       Developer("hygt", "Henry Genet", "noreply@epfl.ch", url("https://bluebrain.epfl.ch/")),
@@ -27,7 +52,7 @@ addSbtPlugin("ch.epfl.scala"          % "sbt-release-early"   % "2.1.1")
 addSbtPlugin("io.get-coursier"        % "sbt-coursier"        % "1.0.1")
 addSbtPlugin("com.geirsson"           % "sbt-scalafmt"        % "1.4.0")
 addSbtPlugin("com.typesafe.sbt"       % "sbt-native-packager" % "1.3.3")
-addSbtPlugin("org.scoverage"          %% "sbt-scoverage"      % "1.5.1")
-addSbtPlugin("com.sksamuel.scapegoat" %% "sbt-scapegoat"      % "1.0.7")
+addSbtPlugin("org.scoverage"          % "sbt-scoverage"       % "1.5.1")
+addSbtPlugin("com.sksamuel.scapegoat" % "sbt-scapegoat"       % "1.0.7")
 addSbtPlugin("com.lightbend.paradox"  % "sbt-paradox"         % "0.3.2")
 addSbtPlugin("com.codacy"             % "sbt-codacy-coverage" % "1.3.11")
