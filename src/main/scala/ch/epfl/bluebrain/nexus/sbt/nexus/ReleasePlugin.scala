@@ -2,12 +2,15 @@ package ch.epfl.bluebrain.nexus.sbt.nexus
 
 import java.util.Properties
 
+import bintray.BintrayPlugin.autoImport.{bintrayOrganization, bintrayRepository}
+import ch.epfl.scala.sbt.release.ReleaseEarlyPlugin
 import sbt.Keys._
 import sbt._
-import sbtrelease.ReleasePlugin.autoImport._
-import sbtrelease.ReleaseStateTransformations._
-import sbtrelease._
+import sbt.librarymanagement.ModuleFilter
+
 import scala.sys.process._
+import scala.xml.transform.{RewriteRule, RuleTransformer}
+import scala.xml.{Elem, Node, NodeSeq}
 
 /**
   * Release configuration for projects using the plugin.  The versions used in the release can be overridden by means
@@ -21,13 +24,45 @@ import scala.sys.process._
   */
 object ReleasePlugin extends AutoPlugin {
 
-  lazy val buildInfoProperties = taskKey[File]("Generates build info properties")
+  trait Keys {
+    val dependencyBlacklist = SettingKey[ModuleFilter](
+      "dependency-blacklist",
+      "A module filter which indicates if a module should be removed from the resulting pom file; if the filter" +
+        " returns true, the module is removed from the dependency list"
+    )
+    val buildInfoProperties = taskKey[File]("Generates build info properties")
+  }
+  object autoImport extends Keys
+  import autoImport._
 
-  override lazy val requires = sbtrelease.ReleasePlugin
+  override lazy val requires = ReleaseEarlyPlugin
 
   override lazy val trigger = allRequirements
 
   override lazy val projectSettings = Seq(
+    bintrayOrganization := Some("bbp"),
+    bintrayRepository := {
+      import ch.epfl.scala.sbt.release.ReleaseEarly.Defaults
+      if (Defaults.isSnapshot.value) "nexus-snapshots"
+      else "nexus-releases"
+    },
+    sources in (Compile, doc)                := Seq.empty,
+    publishArtifact in packageDoc            := false,
+    publishArtifact in (Compile, packageSrc) := false,
+    publishArtifact in (Compile, packageDoc) := false,
+    publishArtifact in (Test, packageBin)    := false,
+    publishArtifact in (Test, packageDoc)    := false,
+    publishArtifact in (Test, packageSrc)    := false,
+    publishMavenStyle                        := true,
+    pomIncludeRepository                     := Function.const(false),
+    // predefined modules to be excluded from the dependency list of the resulting pom
+    dependencyBlacklist := {
+      moduleFilter("org.scoverage") | moduleFilter("com.sksamuel.scapegoat")
+    },
+    // removes compile time only dependencies from the resulting pom
+    pomPostProcess := { node =>
+      transformer(dependencyBlacklist.value).transform(node).head
+    },
     buildInfoProperties := {
       val file            = target.value / "buildinfo.properties"
       val v               = version.value
@@ -45,53 +80,25 @@ object ReleasePlugin extends AutoPlugin {
       buildProperties.setProperty("LICENSE", licenses.value.map(_._1).mkString(","))
       IO.write(buildProperties, "buildinfo", file)
       file
-    },
-    // bump the patch (bugfix) version by default
-    releaseVersionBump := Version.Bump.Bugfix,
-    // compute the version to use for the release (from sys.env or version.sbt)
-    releaseVersion := { ver =>
-      sys.env
-        .get("RELEASE_VERSION") // fetch the optional system env var
-        .map(_.trim)
-        .filterNot(_.isEmpty)
-        .map(v => Version(v).getOrElse(versionFormatError)) // parse it into a version or throw
-        .orElse(Version(ver).map(_.withoutQualifier)) // fallback on the current version without a qualifier
-        .map(_.string) // map it to its string representation
-        .getOrElse(versionFormatError) // throw if we couldn't compute the version
-    },
-    // compute the next development version to use for the release (from sys.env or release version)
-    releaseNextVersion := { ver =>
-      sys.env
-        .get("NEXT_VERSION") // fetch the optional system env var
-        .map(_.trim)
-        .filterNot(_.isEmpty)
-        .map(v => Version(v).getOrElse(versionFormatError)) // parse it into a version or throw
-        .orElse(Version(ver).map(_.bump(releaseVersionBump.value))) // fallback on the current version bumped accordingly
-        .map(_.asSnapshot.string) // map it to its snapshot version as string
-        .getOrElse(versionFormatError) // throw if we couldn't compute the version
-    },
-    // never cross build
-    releaseCrossBuild := false,
-    // tag the release with the '$artifactId-$version'
-    releaseTagName := s"v${(version in ThisBuild).value}",
-    // tag commit comment
-    releaseTagComment := s"Releasing version ${(version in ThisBuild).value}",
-    // the message to use when committing the new version to version.sbt
-    releaseCommitMessage := s"Setting new version to ${(version in ThisBuild).value}",
-    // the default release process, listed explicitly
-    releaseProcess := Seq(
-      checkSnapshotDependencies,
-      inquireVersions,
-      runClean,
-      runTest,
-      setReleaseVersion,
-      commitReleaseVersion,
-      tagRelease,
-      publishArtifacts,
-      releaseStepTask(buildInfoProperties),
-      setNextVersion,
-      commitNextVersion,
-      pushChanges
-    )
+    }
   )
+
+  /**
+    * Constructs a new XML [[scala.xml.transform.RuleTransformer]] based on the argument ''blacklist'' module filter
+    * that strips out ''dependency'' xml nodes that are matched by the ''blacklist''.
+    *
+    * @param blacklist the filter to apply to dependencies
+    * @return a new XML [[scala.xml.transform.RuleTransformer]] that strips out ''blacklist''ed dependencies
+    */
+  private def transformer(blacklist: ModuleFilter): RuleTransformer =
+    new RuleTransformer(new RewriteRule {
+      override def transform(node: Node): NodeSeq = node match {
+        case e: Elem if e.label == "dependency" =>
+          val organization = e.child.filter(_.label == "groupId").flatMap(_.text).mkString
+          val artifact     = e.child.filter(_.label == "artifactId").flatMap(_.text).mkString
+          val version      = e.child.filter(_.label == "version").flatMap(_.text).mkString
+          if (blacklist(organization % artifact % version)) NodeSeq.Empty else node
+        case _ => node
+      }
+    })
 }
