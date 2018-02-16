@@ -25,9 +25,10 @@ scalafmt: {
  */
 
 // Main plugin settings
-organization := "ch.epfl.bluebrain.nexus"
-name         := "sbt-nexus"
-sbtPlugin    := true
+organization        := "ch.epfl.bluebrain.nexus"
+name                := "sbt-nexus"
+sbtPlugin           := true
+dependencyBlacklist := moduleFilter()
 
 // Build publish settings
 inThisBuild(
