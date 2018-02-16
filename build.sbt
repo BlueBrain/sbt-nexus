@@ -28,7 +28,7 @@ scalafmt: {
 organization        := "ch.epfl.bluebrain.nexus"
 name                := "sbt-nexus"
 sbtPlugin           := true
-dependencyBlacklist := moduleFilter()
+dependencyBlacklist := moduleFilter(NothingFilter, NothingFilter, NothingFilter)
 
 // Build publish settings
 inThisBuild(
