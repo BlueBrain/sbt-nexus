@@ -70,6 +70,7 @@ object CompilationPlugin extends AutoPlugin {
         scalacOptionalFlags.value ++
         Seq(s"-target:jvm-${javaSpecificationVersion.value}")
     },
+    scalacOptions in (Compile, console) ~= (_ filterNot (_ == "-Xfatal-warnings")),
     javacOptions ++= Seq("-source",
                          javaSpecificationVersion.value,
                          "-target",

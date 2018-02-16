@@ -1,63 +1,74 @@
 // Main plugin settings
-organization         := "ch.epfl.bluebrain.nexus"
-name                 := "sbt-nexus"
-sbtPlugin            := true
-publishMavenStyle    := true
-pomIncludeRepository := Function.const(false)
-bintrayOrganization  := Some("bbp")
-bintrayRepository    := "nexus-releases"
+organization := "ch.epfl.bluebrain.nexus"
+name         := "sbt-nexus"
+sbtPlugin    := true
 
-// Release settings
-import sbtrelease.ReleaseStateTransformations._
-import sbtrelease._
-releaseVersionBump := Version.Bump.Bugfix
-releaseVersion := { ver =>
-  sys.env
-    .get("RELEASE_VERSION") // fetch the optional system env var
-    .map(_.trim)
-    .filterNot(_.isEmpty)
-    .map(v => Version(v).getOrElse(versionFormatError)) // parse it into a version or throw
-    .orElse(Version(ver).map(_.withoutQualifier)) // fallback on the current version without a qualifier
-    .map(_.string) // map it to its string representation
-    .getOrElse(versionFormatError) // throw if we couldn't compute the version
-}
-releaseNextVersion := { ver =>
-  sys.env
-    .get("NEXT_VERSION") // fetch the optional system env var
-    .map(_.trim)
-    .filterNot(_.isEmpty)
-    .map(v => Version(v).getOrElse(versionFormatError)) // parse it into a version or throw
-    .orElse(Version(ver).map(_.bump(releaseVersionBump.value))) // fallback on the current version bumped accordingly
-    .map(_.asSnapshot.string) // map it to its snapshot version as string
-    .getOrElse(versionFormatError) // throw if we couldn't compute the version
-}
-releaseCrossBuild    := false
-releaseTagName       := s"v${(version in ThisBuild).value}"
-releaseTagComment    := s"Releasing version ${(version in ThisBuild).value}"
-releaseCommitMessage := s"Setting new version to ${(version in ThisBuild).value}"
-releaseProcess := Seq(
-  checkSnapshotDependencies,
-  inquireVersions,
-  runClean,
-  setReleaseVersion,
-  commitReleaseVersion,
-  tagRelease,
-  publishArtifacts,
-  setNextVersion,
-  commitNextVersion,
-  pushChanges
+// Generic publish settings
+sources in (Compile, doc)                := Seq.empty
+publishArtifact in packageDoc            := false
+publishArtifact in (Compile, packageSrc) := true
+publishArtifact in (Compile, packageDoc) := false
+publishArtifact in (Test, packageBin)    := false
+publishArtifact in (Test, packageDoc)    := false
+publishArtifact in (Test, packageSrc)    := false
+publishMavenStyle                        := true
+pomIncludeRepository                     := Function.const(false)
+
+// Bintray publish settings
+bintrayOrganization := Some("bbp")
+bintrayRepository   := "nexus-releases"
+
+// Build publish settings
+inThisBuild(
+  List(
+    homepage := Some(url("https://github.com/BlueBrain/sbt-nexus")),
+    licenses := Seq("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
+    scmInfo := Some(
+      ScmInfo(url("https://github.com/BlueBrain/sbt-nexus"), "scm:git:git@github.com:BlueBrain/sbt-nexus.git")),
+    developers := List(
+      Developer("bogdanromanx", "Bogdan Roman", "noreply@epfl.ch", url("https://bluebrain.epfl.ch/")),
+      Developer("hygt", "Henry Genet", "noreply@epfl.ch", url("https://bluebrain.epfl.ch/")),
+      Developer("umbreak", "Didac Montero Mendez", "noreply@epfl.ch", url("https://bluebrain.epfl.ch/")),
+      Developer("wwajerowicz", "Wojtek Wajerowicz", "noreply@epfl.ch", url("https://bluebrain.epfl.ch/")),
+    ),
+    // These are the sbt-release-early settings to configure
+    releaseEarlyWith              := BintrayPublisher,
+    releaseEarlyNoGpg             := true,
+    releaseEarlyEnableSyncToMaven := false,
+  ))
+
+scalacOptions ++= Seq(
+  "-deprecation",
+  "-encoding",
+  "UTF-8",
+  "-feature",
+  "-unchecked",
+  "-Xlint",
+  "-language:existentials",
+  "-language:higherKinds",
+  "-language:implicitConversions",
+  "-language:postfixOps",
+  "-language:existentials",
+  "-language:experimental.macros",
+  "-Yno-adapted-args",
+  "-Ywarn-dead-code",
+  "-Ywarn-numeric-widen",
+  "-Ywarn-value-discard",
+  "-Ywarn-inaccessible",
+  "-Ywarn-unused-import",
+  "-Ywarn-unused:params,patvars",
+  "-Ywarn-macros:after",
+  "-Xfuture",
+  "-Xfatal-warnings",
+  "-Ypartial-unification",
 )
 
-// Command aliases for CI
-addCommandAlias("review", ";clean;scalafmtCheck;package")
-addCommandAlias("rel", ";release with-defaults")
-
 // Additional plugins to introduce to projects using this plugin
+addSbtPlugin("ch.epfl.scala"          % "sbt-release-early"   % "2.1.1")
+addSbtPlugin("io.get-coursier"        % "sbt-coursier"        % "1.0.1")
+addSbtPlugin("com.geirsson"           % "sbt-scalafmt"        % "1.4.0")
+addSbtPlugin("com.typesafe.sbt"       % "sbt-native-packager" % "1.3.3")
 addSbtPlugin("org.scoverage"          %% "sbt-scoverage"      % "1.5.1")
 addSbtPlugin("com.sksamuel.scapegoat" %% "sbt-scapegoat"      % "1.0.7")
-addSbtPlugin("com.github.gseitz"      % "sbt-release"         % "1.0.7")
-addSbtPlugin("org.foundweekends"      % "sbt-bintray"         % "0.5.3")
-addSbtPlugin("com.typesafe.sbt"       % "sbt-native-packager" % "1.3.3")
 addSbtPlugin("com.lightbend.paradox"  % "sbt-paradox"         % "0.3.2")
-addSbtPlugin("com.geirsson"           % "sbt-scalafmt"        % "1.4.0")
 addSbtPlugin("com.codacy"             % "sbt-codacy-coverage" % "1.3.11")
