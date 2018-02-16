@@ -48,7 +48,7 @@ object ReleasePlugin extends AutoPlugin {
     },
     sources in (Compile, doc)                := Seq.empty,
     publishArtifact in packageDoc            := false,
-    publishArtifact in (Compile, packageSrc) := false,
+    publishArtifact in (Compile, packageSrc) := true,
     publishArtifact in (Compile, packageDoc) := false,
     publishArtifact in (Test, packageBin)    := false,
     publishArtifact in (Test, packageDoc)    := false,
