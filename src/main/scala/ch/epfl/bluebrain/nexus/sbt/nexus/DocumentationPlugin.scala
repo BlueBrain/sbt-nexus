@@ -30,7 +30,7 @@ object DocumentationPlugin extends AutoPlugin {
       else Seq.empty[String]
     },
     javacOptions in (Compile, doc) := Seq("-source", CompilationPlugin.autoImport.javaSpecificationVersion.value),
-    autoAPIMappings                := true,
+    autoAPIMappings := true,
     apiMappings += {
       val scalaDocUrl = s"http://scala-lang.org/api/${scalaVersion.value}/"
       apiMappingFor((fullClasspath in Compile).value)("scala-library", scalaDocUrl)

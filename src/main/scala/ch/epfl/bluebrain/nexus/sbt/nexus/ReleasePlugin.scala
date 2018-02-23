@@ -46,15 +46,15 @@ object ReleasePlugin extends AutoPlugin {
       if (Defaults.isSnapshot.value) "nexus-snapshots"
       else "nexus-releases"
     },
-    sources in (Compile, doc)                := Seq.empty,
-    publishArtifact in packageDoc            := false,
+    sources in (Compile, doc) := Seq.empty,
+    publishArtifact in packageDoc := false,
     publishArtifact in (Compile, packageSrc) := true,
     publishArtifact in (Compile, packageDoc) := false,
-    publishArtifact in (Test, packageBin)    := false,
-    publishArtifact in (Test, packageDoc)    := false,
-    publishArtifact in (Test, packageSrc)    := false,
-    publishMavenStyle                        := true,
-    pomIncludeRepository                     := Function.const(false),
+    publishArtifact in (Test, packageBin) := false,
+    publishArtifact in (Test, packageDoc) := false,
+    publishArtifact in (Test, packageSrc) := false,
+    publishMavenStyle := true,
+    pomIncludeRepository := Function.const(false),
     // predefined modules to be excluded from the dependency list of the resulting pom
     dependencyBlacklist := {
       moduleFilter("org.scoverage") | moduleFilter("com.sksamuel.scapegoat")
