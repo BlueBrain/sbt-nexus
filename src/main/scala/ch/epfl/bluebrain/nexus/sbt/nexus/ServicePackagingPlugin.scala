@@ -1,7 +1,5 @@
 package ch.epfl.bluebrain.nexus.sbt.nexus
 
-import java.util.regex.Pattern
-
 import com.typesafe.sbt.packager.Keys._
 import com.typesafe.sbt.packager.archetypes.JavaAppPackaging
 import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport.{Docker, DockerAlias}
@@ -29,15 +27,7 @@ object ServicePackagingPlugin extends AutoPlugin {
                                None,
                                (packageName in Docker).value,
                                Some((version in Docker).value)),
-    dockerBuildOptions ++= {
-      val options = for {
-        stringArgs <- sys.env.get("DOCKER_BUILD_ARGS").toList
-        arg        <- stringArgs.split(Pattern.quote("|"))
-        pair       <- List("--build-arg", arg)
-      } yield pair
-      options
-    },
-    dockerUpdateLatest          := !isSnapshot.value,
+    dockerUpdateLatest          := false,
     defaultLinuxInstallLocation := "/opt/nexus",
     dockerCommands := {
       val current = dockerCommands.value.filterNot {
@@ -55,18 +45,6 @@ object ServicePackagingPlugin extends AutoPlugin {
       val last =
         Seq(ExecCmd("RUN", "chown", "-R", "root:0", "/opt/docker"), ExecCmd("RUN", "chmod", "-R", "g+w", "/opt/docker"))
       top ++ current ++ last
-    },
-    publishLocal := {
-      publishLocal.value
-      Def.taskDyn {
-        if (!isSnapshot.value) Def.task { (publishLocal in Docker).value } else Def.task { () }
-      }.value
-    },
-    publish := {
-      publish.value
-      Def.taskDyn {
-        if (!isSnapshot.value) Def.task { (publish in Docker).value } else Def.task { () }
-      }.value
     }
   )
 }
