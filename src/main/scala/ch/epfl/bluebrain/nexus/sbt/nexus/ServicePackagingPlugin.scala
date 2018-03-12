@@ -45,6 +45,7 @@ object ServicePackagingPlugin extends AutoPlugin {
       val last =
         Seq(ExecCmd("RUN", "chown", "-R", "root:0", "/opt/docker"), ExecCmd("RUN", "chmod", "-R", "g+w", "/opt/docker"))
       top ++ current ++ last
-    }
+    },
+    topLevelDirectory := None
   )
 }
