@@ -9,7 +9,7 @@ pipeline {
             steps {
                 node("slave-sbt") {
                     checkout scm
-                    sh 'sbt clean scalafmtSbtCheck scapegoat compile'
+                    sh 'sbt clean scalafmtCheck scalafmtSbtCheck scapegoat compile'
                 }
             }
         }
