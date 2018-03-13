@@ -23,9 +23,9 @@ object InstrumentationPlugin extends AutoPlugin {
 
   override lazy val projectSettings = Seq(
     aspectjWeaverVersion := "1.8.10",
-    sigarLoaderVersion := "1.6.6-rev002",
+    sigarLoaderVersion   := "1.6.6-rev002",
     libraryDependencies ++= Seq("org.aspectj" % "aspectjweaver" % aspectjWeaverVersion.value % Runtime,
-                                "io.kamon"    % "sigar-loader"  % sigarLoaderVersion.value   % Runtime),
+                                "io.kamon" % "sigar-loader" % sigarLoaderVersion.value % Runtime),
     bashScriptExtraDefines ++= Seq(
       s"""addJava "-javaagent:$$lib_dir/org.aspectj.aspectjweaver-${aspectjWeaverVersion.value}.jar"""",
       s"""addJava "-javaagent:$$lib_dir/io.kamon.sigar-loader-${sigarLoaderVersion.value}.jar""""
