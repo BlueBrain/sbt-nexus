@@ -1,5 +1,5 @@
 [![Join the chat at https://gitter.im/BlueBrain/nexus](https://badges.gitter.im/BlueBrain/nexus.svg)](https://gitter.im/BlueBrain/nexus?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://bbpcode.epfl.ch/ci/buildStatus/icon?job=nexus.sbt.sbt-nexus)](https://bbpcode.epfl.ch/ci/job/nexus.sbt.sbt-nexus)
+[![Build Status](http://jenkins.nexus.ocp.bbp.epfl.ch/buildStatus/icon?job=nexus/sbt-nexus/master)](http://jenkins.nexus.ocp.bbp.epfl.ch/job/nexus/sbt-nexus/master)
 [![GitHub release](https://img.shields.io/github/release/BlueBrain/sbt-nexus.svg)]()
 
 ## SBT Nexus Plugin
@@ -38,7 +38,7 @@ Exposed setting keys:
    * `scalacStrictFlags` (_scalac-strict-flags_): a collection of stricter compilation flags (i.e.: `-Xfatal-warnings`)
    * `scalacOptionalFlags` (_scalac-optional-flags_): useful additional flags (i.e.: `-Ypartial-unification`)
 
-The plugins automatically sets the `scalaVersion` to `2.12.4`, the `javaSpecificationVersion` to `1.8` and checks during
+The plugins automatically sets the `scalaVersion` to `2.12.5`, the `javaSpecificationVersion` to `1.8` and checks during
 the initialization phase if the installed jdk is compatible with the target java version.  It also appends to the
 `scalacOptions` all the flags defined in the exposed settings and sets the necessary compiler flags for both `javac` and
 `scalac` to generate bytecode compatible with the defined `javaSpecificationVersion`.
