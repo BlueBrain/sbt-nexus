@@ -14,7 +14,7 @@ object StaticAnalysisPlugin extends AutoPlugin {
   override lazy val trigger = allRequirements
 
   override lazy val buildSettings = Seq(
-    scapegoatVersion     := "1.3.4",
+    scapegoatVersion     := "1.3.5",
     scapegoatMaxWarnings := 0,
     scapegoatMaxErrors   := 0,
     scapegoatMaxInfos    := 0,
