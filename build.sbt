@@ -50,10 +50,10 @@ inThisBuild(
 
 // Additional plugins to introduce to projects using this plugin
 addSbtPlugin("ch.epfl.scala"          % "sbt-release-early"   % "2.1.1")
-addSbtPlugin("io.get-coursier"        % "sbt-coursier"        % "1.0.1")
-addSbtPlugin("com.geirsson"           % "sbt-scalafmt"        % "1.4.0")
+addSbtPlugin("io.get-coursier"        % "sbt-coursier"        % "1.0.3")
+addSbtPlugin("com.geirsson"           % "sbt-scalafmt"        % "1.5.1")
 addSbtPlugin("com.typesafe.sbt"       % "sbt-native-packager" % "1.3.4")
 addSbtPlugin("org.scoverage"          % "sbt-scoverage"       % "1.5.1")
-addSbtPlugin("com.sksamuel.scapegoat" % "sbt-scapegoat"       % "1.0.7")
-addSbtPlugin("com.lightbend.paradox"  % "sbt-paradox"         % "0.3.3")
-addSbtPlugin("com.codacy"             % "sbt-codacy-coverage" % "1.3.11")
+addSbtPlugin("com.sksamuel.scapegoat" % "sbt-scapegoat"       % "1.0.9")
+addSbtPlugin("com.lightbend.paradox"  % "sbt-paradox"         % "0.3.5")
+addSbtPlugin("com.codacy"             % "sbt-codacy-coverage" % "1.3.12")
