@@ -9,6 +9,8 @@
 
 # Maven / SBT / Ant target #
 target/
+.bloop
+project/.bloop
 
 # IDE
 .settings
