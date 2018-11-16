@@ -22,7 +22,7 @@ object InstrumentationPlugin extends AutoPlugin {
   import autoImport._
 
   override lazy val projectSettings = Seq(
-    aspectjWeaverVersion := "1.8.10",
+    aspectjWeaverVersion := "1.9.2",
     sigarLoaderVersion   := "1.6.6-rev002",
     libraryDependencies ++= Seq("org.aspectj" % "aspectjweaver" % aspectjWeaverVersion.value % Runtime,
                                 "io.kamon" % "sigar-loader" % sigarLoaderVersion.value % Runtime),
