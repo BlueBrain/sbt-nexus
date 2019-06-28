@@ -19,7 +19,7 @@ object ServicePackagingPlugin extends AutoPlugin {
 
   override lazy val projectSettings = Seq(
     maintainer         := "Nexus Team <noreply@epfl.ch>",
-    dockerBaseImage    := "openjdk:11-jre",
+    dockerBaseImage    := "adoptopenjdk:11-jre-hotspot",
     daemonUser         := "root",
     dockerExposedPorts := Seq(8080, 2552),
     dockerRepository   := sys.env.get("DOCKER_REGISTRY"),
