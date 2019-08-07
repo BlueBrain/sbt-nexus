@@ -38,9 +38,9 @@ object CompilationPlugin extends AutoPlugin {
   import autoImport._
 
   override lazy val projectSettings = Seq(
-    javaSpecificationVersion := "1.8",
-    scalaVersion             := "2.12.8",
-    scalacSilencerVersion    := "1.3.1",
+    javaSpecificationVersion := "11",
+    scalaVersion             := "2.12.9",
+    scalacSilencerVersion    := "1.4.2",
     scalacCommonFlags        := Seq("-deprecation", "-encoding", "UTF-8", "-feature", "-unchecked", "-Xlint"),
     scalacLanguageFlags := Seq(
       "-language:existentials",
