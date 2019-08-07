@@ -68,7 +68,7 @@ object CompilationPlugin extends AutoPlugin {
         scalacLanguageFlags.value ++
         scalacStrictFlags.value ++
         scalacOptionalFlags.value ++
-        Seq(s"-target:jvm-${javaSpecificationVersion.value}")
+        Seq(s"-target:jvm-1.8")
     },
     scalacOptions in (Compile, console) ~= (_ filterNot (_ == "-Xfatal-warnings")),
     javacOptions ++= Seq("-source",
