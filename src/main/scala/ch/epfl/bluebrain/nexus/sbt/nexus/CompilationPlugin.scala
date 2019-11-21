@@ -77,8 +77,8 @@ object CompilationPlugin extends AutoPlugin {
                          javaSpecificationVersion.value,
                          "-Xlint"),
     libraryDependencies ++= Seq(
-      compilerPlugin("com.github.ghik" %% "silencer-plugin" % scalacSilencerVersion.value cross CrossVersion.full),
-      "com.github.ghik" %% "silencer-lib" % scalacSilencerVersion.value % Provided cross CrossVersion.full
+      compilerPlugin("com.github.ghik" % "silencer-plugin" % scalacSilencerVersion.value cross CrossVersion.full),
+      "com.github.ghik" % "silencer-lib" % scalacSilencerVersion.value % Provided cross CrossVersion.full
     ),
     // fail the build initialization if the JDK currently used is not ${javaSpecificationVersion} or higher
     initialize := {
