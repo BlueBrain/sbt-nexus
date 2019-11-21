@@ -18,11 +18,13 @@ object CompilationPlugin extends AutoPlugin {
   trait Keys {
     val scalacSilencerVersion = SettingKey[String](
       "scalac-silencer-version",
-      "Scalac silencer plugin version for annotation-based warning suppression.")
+      "Scalac silencer plugin version for annotation-based warning suppression."
+    )
 
     val javaSpecificationVersion = SettingKey[String](
       "java-specification-version",
-      "The java specification version to be used for source and target compatibility.")
+      "The java specification version to be used for source and target compatibility."
+    )
 
     val scalacCommonFlags =
       SettingKey[Seq[String]]("scalac-common-flags", "Common scalac options useful to most projects")
@@ -71,11 +73,13 @@ object CompilationPlugin extends AutoPlugin {
         Seq(s"-target:jvm-1.8")
     },
     scalacOptions in (Compile, console) ~= (_ filterNot (_ == "-Xfatal-warnings")),
-    javacOptions ++= Seq("-source",
-                         javaSpecificationVersion.value,
-                         "-target",
-                         javaSpecificationVersion.value,
-                         "-Xlint"),
+    javacOptions ++= Seq(
+      "-source",
+      javaSpecificationVersion.value,
+      "-target",
+      javaSpecificationVersion.value,
+      "-Xlint"
+    ),
     libraryDependencies ++= Seq(
       compilerPlugin("com.github.ghik" % "silencer-plugin" % scalacSilencerVersion.value cross CrossVersion.full),
       "com.github.ghik" % "silencer-lib" % scalacSilencerVersion.value % Provided cross CrossVersion.full

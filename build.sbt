@@ -40,13 +40,14 @@ inThisBuild(
       Developer("bogdanromanx", "Bogdan Roman", "noreply@epfl.ch", url("https://bluebrain.github.io/nexus")),
       Developer("hygt", "Henry Genet", "noreply@epfl.ch", url("https://bluebrain.github.io/nexus")),
       Developer("umbreak", "Didac Montero Mendez", "noreply@epfl.ch", url("https://bluebrain.github.io/nexus")),
-      Developer("wwajerowicz", "Wojtek Wajerowicz", "noreply@epfl.ch", url("https://bluebrain.github.io/nexus")),
+      Developer("wwajerowicz", "Wojtek Wajerowicz", "noreply@epfl.ch", url("https://bluebrain.github.io/nexus"))
     ),
     // These are the sbt-release-early settings to configure
     releaseEarlyWith              := BintrayPublisher,
     releaseEarlyNoGpg             := true,
-    releaseEarlyEnableSyncToMaven := false,
-  ))
+    releaseEarlyEnableSyncToMaven := false
+  )
+)
 
 // Additional plugins to introduce to projects using this plugin
 addSbtPlugin("ch.epfl.scala"          % "sbt-release-early"   % "2.1.1")
