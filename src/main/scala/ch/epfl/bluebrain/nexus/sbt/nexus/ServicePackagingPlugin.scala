@@ -2,8 +2,8 @@ package ch.epfl.bluebrain.nexus.sbt.nexus
 
 import com.typesafe.sbt.packager.Keys._
 import com.typesafe.sbt.packager.archetypes.JavaAppPackaging
-import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport.{Docker, DockerAlias}
-import com.typesafe.sbt.packager.docker.{Cmd, DockerPlugin, ExecCmd}
+import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport.{dockerPermissionStrategy, Docker, DockerAlias}
+import com.typesafe.sbt.packager.docker.{Cmd, DockerPermissionStrategy, DockerPlugin, ExecCmd}
 import com.typesafe.sbt.packager.universal.UniversalPlugin
 import sbt.Keys._
 import sbt._
@@ -46,6 +46,7 @@ object ServicePackagingPlugin extends AutoPlugin {
         Seq(ExecCmd("RUN", "chown", "-R", "root:0", "/opt/docker"), ExecCmd("RUN", "chmod", "-R", "g+w", "/opt/docker"))
       top ++ current ++ last
     },
-    topLevelDirectory := None
+    topLevelDirectory        := None,
+    dockerPermissionStrategy := DockerPermissionStrategy.None
   )
 }

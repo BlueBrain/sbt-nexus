@@ -39,8 +39,8 @@ object CompilationPlugin extends AutoPlugin {
 
   override lazy val projectSettings = Seq(
     javaSpecificationVersion := "11",
-    scalaVersion             := "2.12.9",
-    scalacSilencerVersion    := "1.4.2",
+    scalaVersion             := "2.12.10",
+    scalacSilencerVersion    := "1.4.4",
     scalacCommonFlags        := Seq("-deprecation", "-encoding", "UTF-8", "-feature", "-unchecked", "-Xlint"),
     scalacLanguageFlags := Seq(
       "-language:existentials",
@@ -77,8 +77,8 @@ object CompilationPlugin extends AutoPlugin {
                          javaSpecificationVersion.value,
                          "-Xlint"),
     libraryDependencies ++= Seq(
-      compilerPlugin("com.github.ghik" %% "silencer-plugin" % scalacSilencerVersion.value),
-      "com.github.ghik" %% "silencer-lib" % scalacSilencerVersion.value
+      compilerPlugin("com.github.ghik" %% "silencer-plugin" % scalacSilencerVersion.value cross CrossVersion.full),
+      "com.github.ghik" %% "silencer-lib" % scalacSilencerVersion.value % Provided cross CrossVersion.full
     ),
     // fail the build initialization if the JDK currently used is not ${javaSpecificationVersion} or higher
     initialize := {

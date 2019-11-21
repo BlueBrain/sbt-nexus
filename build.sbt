@@ -50,12 +50,10 @@ inThisBuild(
 
 // Additional plugins to introduce to projects using this plugin
 addSbtPlugin("ch.epfl.scala"          % "sbt-release-early"   % "2.1.1")
-addSbtPlugin("io.get-coursier"        % "sbt-coursier"        % "2.0.0-RC2")
-addSbtPlugin("org.scalameta"          % "sbt-scalafmt"        % "2.0.0")
-addSbtPlugin("com.typesafe.sbt"       % "sbt-native-packager" % "1.3.25")
-addSbtPlugin("org.scoverage"          % "sbt-scoverage"       % "1.5.1")
-addSbtPlugin("com.sksamuel.scapegoat" % "sbt-scapegoat"       % "1.0.9")
-addSbtPlugin("com.lightbend.paradox"  % "sbt-paradox"         % "0.4.3")
-addSbtPlugin("com.codacy"             % "sbt-codacy-coverage" % "2.3")
+addSbtPlugin("org.scalameta"          % "sbt-scalafmt"        % "2.2.1")
+addSbtPlugin("com.typesafe.sbt"       % "sbt-native-packager" % "1.4.0")
+addSbtPlugin("org.scoverage"          % "sbt-scoverage"       % "1.6.1")
+addSbtPlugin("com.sksamuel.scapegoat" % "sbt-scapegoat"       % "1.1.0")
+addSbtPlugin("com.lightbend.paradox"  % "sbt-paradox"         % "0.6.7")
 
 addCommandAlias("review", ";clean;scalafmtCheck;scalafmtSbtCheck;compile")
