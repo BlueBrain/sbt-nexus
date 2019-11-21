@@ -23,10 +23,12 @@ object ServicePackagingPlugin extends AutoPlugin {
     daemonUser         := "root",
     dockerExposedPorts := Seq(8080, 2552),
     dockerRepository   := sys.env.get("DOCKER_REGISTRY"),
-    dockerAlias := DockerAlias(dockerRepository.value,
-                               None,
-                               (packageName in Docker).value,
-                               Some((version in Docker).value)),
+    dockerAlias := DockerAlias(
+      dockerRepository.value,
+      None,
+      (packageName in Docker).value,
+      Some((version in Docker).value)
+    ),
     dockerUpdateLatest          := false,
     defaultLinuxInstallLocation := "/opt/nexus",
     dockerCommands := {
