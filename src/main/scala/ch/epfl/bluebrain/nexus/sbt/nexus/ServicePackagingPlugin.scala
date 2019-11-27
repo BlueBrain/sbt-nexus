@@ -2,9 +2,10 @@ package ch.epfl.bluebrain.nexus.sbt.nexus
 
 import com.typesafe.sbt.packager.Keys._
 import com.typesafe.sbt.packager.archetypes.JavaAppPackaging
-import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport.{dockerPermissionStrategy, Docker, DockerAlias}
-import com.typesafe.sbt.packager.docker.{Cmd, DockerPermissionStrategy, DockerPlugin, ExecCmd}
+import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport.{dockerChmodType, Docker}
+import com.typesafe.sbt.packager.docker.{DockerChmodType, DockerPlugin, DockerVersion}
 import com.typesafe.sbt.packager.universal.UniversalPlugin
+import com.typesafe.sbt.packager.universal.UniversalPlugin.autoImport.Universal
 import sbt.Keys._
 import sbt._
 
@@ -17,38 +18,35 @@ object ServicePackagingPlugin extends AutoPlugin {
 
   override lazy val trigger = noTrigger
 
+  val downloadWaitForItScript = taskKey[File]("Downloads the wait-for-it.sh script to the target folder")
+
   override lazy val projectSettings = Seq(
-    maintainer         := "Nexus Team <noreply@epfl.ch>",
-    dockerBaseImage    := "adoptopenjdk:11-jre-hotspot",
-    daemonUser         := "root",
-    dockerExposedPorts := Seq(8080, 2552),
-    dockerRepository   := sys.env.get("DOCKER_REGISTRY"),
-    dockerAlias := DockerAlias(
-      dockerRepository.value,
-      None,
-      (packageName in Docker).value,
-      Some((version in Docker).value)
-    ),
-    dockerUpdateLatest          := false,
-    defaultLinuxInstallLocation := "/opt/nexus",
-    dockerCommands := {
-      val current = dockerCommands.value.filterNot {
-        case Cmd("FROM", _*) => true
-        case Cmd("USER", _*) => true
-        case _               => false
-      }
-      val top = Seq(
-        Cmd("FROM", dockerBaseImage.value),
-        Cmd("USER", daemonUser.value),
-        ExecCmd("RUN", "apt-get", "-qq", "update"),
-        ExecCmd("RUN", "apt-get", "-yq", "install", "dnsutils"),
-        ExecCmd("RUN", "apt-get", "clean")
-      )
-      val last =
-        Seq(ExecCmd("RUN", "chown", "-R", "root:0", "/opt/docker"), ExecCmd("RUN", "chmod", "-R", "g+w", "/opt/docker"))
-      top ++ current ++ last
+    downloadWaitForItScript := {
+      import scala.sys.process._
+      val waitUrl = url("https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh")
+      val file    = target.value / "wait-for-it.sh"
+      assert((waitUrl #> file !) == 0, "Downloading wait-for-it.sh script failed")
+      file
     },
-    topLevelDirectory        := None,
-    dockerPermissionStrategy := DockerPermissionStrategy.None
+    // package the kanela agent as a fixed name jar
+    mappings in Universal := {
+      val universalMappings = (mappings in Universal).value
+      universalMappings.foldLeft(Vector.empty[(File, String)]) {
+        case (acc, (file, filename)) if filename.contains("kanela-agent") =>
+          acc :+ (file -> "lib/instrumentation-agent.jar")
+        case (acc, other) =>
+          acc :+ other
+      } :+ (downloadWaitForItScript.value -> "bin/wait-for-it.sh")
+    },
+    // docker publishing settings
+    Docker / maintainer := "Nexus Team <noreply@epfl.ch>",
+    Docker / version    := "latest",
+    Docker / daemonUser := "nexus",
+    dockerBaseImage     := "adoptopenjdk:11-jre-hotspot",
+    dockerExposedPorts  := Seq(8080, 2552),
+    dockerUsername      := Some("bluebrain"),
+    dockerUpdateLatest  := false,
+    dockerChmodType     := DockerChmodType.UserGroupWriteExecute,
+    dockerVersion       := Some(DockerVersion(19, 3, 5, Some("ce"))) // forces the version because gh-actions version is 3.0.x which is not recognized to support multistage
   )
 }
