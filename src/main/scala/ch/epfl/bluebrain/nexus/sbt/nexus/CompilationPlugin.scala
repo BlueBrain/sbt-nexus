@@ -2,6 +2,7 @@ package ch.epfl.bluebrain.nexus.sbt.nexus
 
 import sbt.Keys._
 import sbt._
+import _root_.io.github.davidgregory084.TpolecatPlugin
 
 /**
   * Keys and default configuration for project compilation.  Aside the typical compiler flags for both scala and java
@@ -11,7 +12,7 @@ import sbt._
   */
 object CompilationPlugin extends AutoPlugin {
 
-  override lazy val requires = empty
+  override lazy val requires = TpolecatPlugin
 
   override lazy val trigger = allRequirements
 
@@ -25,15 +26,6 @@ object CompilationPlugin extends AutoPlugin {
       "java-specification-version",
       "The java specification version to be used for source and target compatibility."
     )
-
-    val scalacCommonFlags =
-      SettingKey[Seq[String]]("scalac-common-flags", "Common scalac options useful to most projects")
-
-    val scalacLanguageFlags = SettingKey[Seq[String]]("scalac-language-flags", "Scalac language options to enable")
-
-    val scalacStrictFlags = SettingKey[Seq[String]]("scalac-strict-flags", "Scalac strict compilation flags")
-
-    val scalacOptionalFlags = SettingKey[Seq[String]]("scalac-optional-flags", "Scalac optional compilation flags")
   }
 
   object autoImport extends Keys
@@ -41,38 +33,9 @@ object CompilationPlugin extends AutoPlugin {
 
   override lazy val projectSettings = Seq(
     javaSpecificationVersion := "11",
-    scalaVersion             := "2.12.10",
+    scalaVersion             := "2.13.1",
     scalacSilencerVersion    := "1.4.4",
-    scalacCommonFlags        := Seq("-deprecation", "-encoding", "UTF-8", "-feature", "-unchecked", "-Xlint"),
-    scalacLanguageFlags := Seq(
-      "-language:existentials",
-      "-language:higherKinds",
-      "-language:implicitConversions",
-      "-language:postfixOps",
-      "-language:existentials",
-      "-language:experimental.macros"
-    ),
-    scalacStrictFlags := Seq(
-      "-Xfatal-warnings",
-      "-Yno-adapted-args",
-      "-Ywarn-dead-code",
-      "-Ywarn-numeric-widen",
-      "-Ywarn-value-discard",
-      "-Ywarn-inaccessible",
-      "-Ywarn-unused-import",
-      "-Ywarn-unused:params,patvars",
-      "-Ywarn-macros:after",
-      "-Xfuture"
-    ),
-    scalacOptionalFlags := Seq("-Ypartial-unification"),
-    scalacOptions ++= {
-      scalacCommonFlags.value ++
-        scalacLanguageFlags.value ++
-        scalacStrictFlags.value ++
-        scalacOptionalFlags.value ++
-        Seq(s"-target:jvm-1.8")
-    },
-    scalacOptions in (Compile, console) ~= (_ filterNot (_ == "-Xfatal-warnings")),
+    scalacOptions ~= filterSelfImplicitScalacOptions,
     javacOptions ++= Seq(
       "-source",
       javaSpecificationVersion.value,
@@ -94,6 +57,10 @@ object CompilationPlugin extends AutoPlugin {
       assert(CompatibleJavaVersion(current, required), s"Java '$required' or above required; current '$current'")
     }
   )
+
+  val filterSelfImplicitScalacOptions = { options: Seq[String] =>
+    options.filterNot(Set("-Wself-implicit"))
+  }
 
   /**
     * Custom java compatibility check.  Any higher version than current is considered compatible.

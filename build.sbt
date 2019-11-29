@@ -50,11 +50,12 @@ inThisBuild(
 )
 
 // Additional plugins to introduce to projects using this plugin
-addSbtPlugin("ch.epfl.scala"          % "sbt-release-early"   % "2.1.1")
-addSbtPlugin("org.scalameta"          % "sbt-scalafmt"        % "2.2.1")
-addSbtPlugin("com.typesafe.sbt"       % "sbt-native-packager" % "1.4.0")
-addSbtPlugin("org.scoverage"          % "sbt-scoverage"       % "1.6.1")
-addSbtPlugin("com.sksamuel.scapegoat" % "sbt-scapegoat"       % "1.1.0")
-addSbtPlugin("com.lightbend.paradox"  % "sbt-paradox"         % "0.6.7")
+addSbtPlugin("ch.epfl.scala"             % "sbt-release-early"   % "2.1.1")
+addSbtPlugin("org.scalameta"             % "sbt-scalafmt"        % "2.2.1")
+addSbtPlugin("com.typesafe.sbt"          % "sbt-native-packager" % "1.5.1")
+addSbtPlugin("org.scoverage"             % "sbt-scoverage"       % "1.6.1")
+addSbtPlugin("com.sksamuel.scapegoat"    % "sbt-scapegoat"       % "1.1.0")
+addSbtPlugin("com.lightbend.paradox"     % "sbt-paradox"         % "0.6.7")
+addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat"        % "0.1.9")
 
 addCommandAlias("review", ";clean;scalafmtCheck;scalafmtSbtCheck;compile")
