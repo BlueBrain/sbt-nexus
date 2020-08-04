@@ -1,5 +1,4 @@
 [![Join the chat at https://gitter.im/BlueBrain/nexus](https://badges.gitter.im/BlueBrain/nexus.svg)](https://gitter.im/BlueBrain/nexus?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](http://jenkins.nexus.ocp.bbp.epfl.ch/buildStatus/icon?job=nexus/sbt-nexus/master)](http://jenkins.nexus.ocp.bbp.epfl.ch/job/nexus/sbt-nexus/master)
 [![GitHub release](https://img.shields.io/github/release/BlueBrain/sbt-nexus.svg)]()
 
 ## SBT Nexus Plugin
@@ -8,6 +7,10 @@ The plugin provides a collection of sbt auto plugins that configure a project wi
 based scala nexus projects.
 
 Please visit the [parent project](https://github.com/BlueBrain/nexus) for more information about Nexus.
+
+## Repository was discontinued
+
+The code has been moved to the [main nexus repository](https://github.com/bluebrain/nexus) directly in the main build.sbt.
 
 ### Getting Started
 
