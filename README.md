@@ -116,3 +116,11 @@ This plugin adds aspectj and sigar loader as java agents to all apps packaged wi
 
 Generic auto plugin to define arbitrary Nexus specific settings that don't deserve their own separate plugin.  It
 currently configures the default organization for all artifacts.
+
+## Funding & Acknowledgment
+
+The development of this software was supported by funding to the Blue Brain Project, a research center of the École polytechnique fédérale de
+Lausanne (EPFL), from the Swiss government's ETH Board of the Swiss Federal Institutes of Technology.
+
+Copyright © 2015-2021 Blue Brain Project/EPFL
+
